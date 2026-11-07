@@ -7,6 +7,7 @@ from typing import Awaitable, Callable
 
 from ..knowledge.graph import PersonalGraph, tiers_upto
 from ..llm import llm
+from ..matching import common_ground, phrases
 from ..schemas import AgentMessage, Claim, Evidence, Intent, Pack, Proposal, Sender
 from ..store import recall
 from . import templates, verifier
@@ -53,6 +54,7 @@ class RequesterAgent:
         self.profile = them.public_profile(pack.id)
         self.turn = 0
         self.adversarial = bool(me.meta.get("adversarial"))
+        self.cg: dict = {}
 
     async def think(self, step: str, detail: str, data=None):
         await self.emit("thinking", role=self.role, step=step, detail=detail, data=data)
@@ -67,6 +69,10 @@ class RequesterAgent:
             await self.think("Relationship", f"Knows {self.them.first_name()}: closeness {rel.get('closeness')}, last met {rel.get('last_met')}.", data=rel)
         await self.think("Profiler", f"Read {self.them.name}'s public profile: {', '.join(self.profile['prefs'].keys()) or 'nothing public'}.",
                          data=self.profile)
+        self.cg = common_ground(self.pack, self.facts, self.profile["prefs"], my_graph=self.me, their_graph=self.them)
+        await self.emit("common_ground", role=self.role, points=self.cg["points"], fit=self.cg["score"], data=self.cg)
+        if self.cg["points"]:
+            await self.think("Common ground", "Leading with what they share: " + "; ".join(self.cg["points"]) + ".", data=self.cg)
         fit = score_fit(self.pack, self.facts, self.profile["prefs"])
         await self.emit("fit", role=self.role, label="Fit pre-check (public info only)", fit=fit.as_dict())
         if fit.veto:
@@ -146,21 +152,13 @@ class RequesterAgent:
             return Intent(act="decline", note="Their counter doesn't fit my calendar.")
         return Intent(act="end", note="Nothing left to do.")
 
-    def _overlap_words(self) -> list[str]:
-        prefs = self.profile["prefs"]
-        words = []
-        for c in self.pack.fit_criteria:
-            if c.kind == "overlap" and c.pref in prefs:
-                mine = {str(x).lower() for x in (self.facts.get(c.fact) or [])}
-                words += [x for x in prefs[c.pref] if str(x).lower() in mine]
-        return words[:3]
-
     async def generate(self, intent: Intent, claims: list[Claim]) -> str:
         one_liner = next((n["attrs"].get("one_liner", "") for n in self.me.nodes(types=["Work"], tiers=self.tiers)), "")
+        shared = phrases(self.cg)
         fallback = templates.requester_text(
             intent.act, me=self.me, them=self.them, pack=self.pack, statements=[c.statement for c in claims],
             withheld=intent.withheld, proposal=intent.proposal, one_liner=one_liner if intent.act == "introduce" else "",
-            focus=templates.join(self._overlap_words()))
+            focus=templates.join(shared))
         if intent.act == "accept":
             fallback = f"Great, {templates.when(intent.proposal.fields['slot'])} works for {self.me.first_name()}."
         if intent.act == "decline":
@@ -173,6 +171,7 @@ class RequesterAgent:
                 "(0 = coordinate only, 1 = propose with reasons, 2 = make a case). Never pressure, flatter or bluff. "
                 "Use ONLY the facts listed; do not add numbers, names or promises. Say you are an AI agent in the first message.",
                 f"Intent: {intent.model_dump_json()}\nFacts you may state: {[c.statement for c in claims]}\n"
+                f"Common ground to lead with (real shared points, weave in naturally, invent nothing): {self.cg.get('points', [])}\n"
                 f"Do not share: {intent.withheld}\nProposal: {intent.proposal.model_dump_json() if intent.proposal else None}\n"
                 f"Reference draft: {fallback}\nReturn {{\"candidates\": [\"text 1\", \"text 2\"]}}", max_tokens=600)
             if isinstance(out, dict):

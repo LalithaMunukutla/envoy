@@ -31,7 +31,7 @@ def requester_text(act: str, *, me, them, pack, statements, withheld, proposal, 
         return line + ". No pressure either way."
     parts = []
     if act == "introduce":
-        parts.append(f"Hi {their}, I'm an AI agent acting for {first} ({me.headline}).")
+        parts.append(f"Hi {their}, I'm an AI agent acting for {first}" + (f" ({me.headline})." if me.headline else "."))
         if one_liner:
             parts.append(one_liner)
         parts.append(" ".join(s.rstrip(".") + "." for s in statements))

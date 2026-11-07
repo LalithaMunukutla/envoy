@@ -3,8 +3,12 @@
   "name": "Maya Chen",
   "headline": "Founder and CEO, Lumen Labs",
   "meta": {
+    "demo": true,
     "role": "founder",
-    "company": "Lumen Labs"
+    "company": "Lumen Labs",
+    "intents": [
+      "raising"
+    ]
   },
   "nodes": [
     {

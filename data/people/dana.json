@@ -3,8 +3,12 @@
   "name": "Dana Ruiz",
   "headline": "Partner, Northbeam Ventures",
   "meta": {
+    "demo": true,
     "role": "investor",
-    "firm": "Northbeam Ventures"
+    "firm": "Northbeam Ventures",
+    "intents": [
+      "investing"
+    ]
   },
   "nodes": [
     {

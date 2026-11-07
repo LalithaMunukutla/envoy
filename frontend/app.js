@@ -37,23 +37,35 @@ const ui = { es: null, info: null, reached: new Set(), people: {}, scenarios: []
 
 /* ---------------- boot ---------------- */
 async function boot() {
-  const [health, scenarios, packs] = await Promise.all([api("/api/health"), api("/api/scenarios"), api("/api/packs")]);
+  const [health, packs, intents, people] = await Promise.all([
+    api("/api/health"), api("/api/packs"), api("/api/intents"), api("/api/people")]);
   const mode = $("#mode");
   mode.textContent = health.mode === "live" ? "Live model" : "Offline demo";
   mode.classList.toggle("live", health.mode === "live");
   mode.title = health.mode === "live" ? `Claude writes and checks messages (${health.models.smart})` : "Runs without an API key: decisions in code, phrasing from templates";
-  ui.scenarios = scenarios;
   packs.forEach((p) => (ui.packs[p.id] = p));
-  const select = $("#scenario");
-  for (const p of packs) {
-    const group = h("optgroup", { label: p.title });
-    scenarios.filter((s) => s.pack === p.id).forEach((s) => group.append(h("option", { value: s.id }, s.title)));
-    if (group.children.length) select.append(group);
-  }
-  $("#run").addEventListener("click", start);
+  ui.intents = intents;
+  populateSeeking(intents);
+  populateMe(people);
+  $("#find").addEventListener("click", findMatches);
   document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => showView(b.dataset.view)));
   renderRoute(null);
   initGraphs();
+}
+
+function populateSeeking(intents) {
+  $("#seeking").replaceChildren(...intents.map((it) =>
+    h("option", { value: it.id }, `Looking for: ${it.label.replace(/^.*?: /, "")}`)));
+}
+
+function populateMe(people) {
+  const sel = $("#me-select");
+  // richest graph first, so the default pick is a usable agent (not an empty one)
+  const sorted = [...people].sort((a, b) => (b.nodes || 0) - (a.nodes || 0));
+  sel.replaceChildren(...(sorted.length
+    ? sorted.map((p) => h("option", { value: p.id }, `${p.name}${p.nodes <= 1 ? " (empty)" : ""}`))
+    : [h("option", { value: "" }, "Create an agent first")]));
+  $("#find").disabled = sorted.length === 0;
 }
 
 function showView(view) {
@@ -61,12 +73,50 @@ function showView(view) {
   $("#view-negotiation").hidden = view !== "negotiation";
   $("#view-graphs").hidden = view !== "graphs";
   if (view === "graphs") loadPeople();
+  if (view === "negotiation") api("/api/people").then(populateMe);
+}
+
+/* ---------------- discovery ---------------- */
+async function findMatches() {
+  const me = $("#me-select").value;
+  const intent = $("#seeking").value;
+  if (!me) { showView("graphs"); return; }
+  const box = $("#matches");
+  box.hidden = false;
+  box.replaceChildren(h("p", { class: "empty" }, "Finding people to connect with..."));
+  try {
+    const r = await api(`/api/people/${me}/matches?intent=${encodeURIComponent(intent)}`);
+    renderMatches(me, r);
+  } catch (err) { box.replaceChildren(h("p", { class: "note" }, `Could not find matches: ${err.message}`)); }
+}
+
+function renderMatches(me, r) {
+  const box = $("#matches");
+  $("#pack-line").textContent = `${r.pack_title}. Start a conversation and both agents negotiate; nothing books until both people approve.`;
+  if (!r.matches.length) {
+    box.replaceChildren(h("div", { class: "welcome" },
+      h("p", { class: "welcome-title" }, "No matches yet."),
+      h("p", {}, "Nobody in the network wants the other side of this yet. Create more agents (with matching goals) in Knowledge graphs, or try a different goal.")));
+    return;
+  }
+  box.replaceChildren(
+    h("p", { class: "matches-head" }, `${r.matches.length} potential ${r.matches.length === 1 ? "match" : "matches"}`),
+    h("div", { class: "match-grid" }, r.matches.map((m) =>
+      h("article", { class: "match-card" },
+        h("header", {},
+          h("span", { class: "match-name" }, m.name),
+          m.sample ? h("span", { class: "sample-tag" }, "sample") : null,
+          h("span", { class: "match-score" }, `${Math.round(m.score * 100)}%`)),
+        h("p", { class: "match-headline" }, m.headline || ""),
+        m.points?.length ? h("ul", { class: "match-points" }, m.points.slice(0, 3).map((p) => h("li", {}, p))) : null,
+        h("button", { class: "primary", onclick: () => startSession({ requester: me, receiver: m.id, pack: m.pack }) }, "Start conversation")))));
 }
 
 /* ---------------- session ---------------- */
-async function start() {
+async function startSession(body) {
   ui.es?.close();
   ui.reached = new Set();
+  $("#matches").hidden = true;
   $("#approval").hidden = true;
   $("#letters").replaceChildren();
   for (const role of ["requester", "receiver"]) {
@@ -74,11 +124,12 @@ async function start() {
     desk.querySelector('[data-slot="log"]').replaceChildren();
     desk.querySelector('[data-slot="fit"]').replaceChildren(h("p", { class: "empty" }, role === "requester" ? "Checking public information..." : "Waiting for the first message."));
   }
+  $('#desk-requester [data-slot="common"]').replaceChildren(h("p", { class: "empty" }, "Found before reaching out."));
   $('#desk-receiver [data-slot="spark"]').replaceChildren(h("p", { class: "empty" }, "Scored after each message."));
-  const run = $("#run");
-  run.disabled = true;
+  const find = $("#find");
+  find.disabled = true;
   try {
-    const info = await post("/api/sessions", { scenario: $("#scenario").value });
+    const info = await post("/api/sessions", body);
     ui.info = info;
     setDesk("requester", info.requester);
     setDesk("receiver", info.receiver);
@@ -87,11 +138,11 @@ async function start() {
     renderRoute("handshake");
     ui.es = new EventSource(`/api/sessions/${info.id}/events`);
     ui.es.onmessage = (e) => handle(JSON.parse(e.data));
-    ui.es.addEventListener("done", () => { ui.es.close(); run.disabled = false; });
-    ui.es.onerror = () => { run.disabled = false; };
+    ui.es.addEventListener("done", () => { ui.es.close(); find.disabled = false; });
+    ui.es.onerror = () => { find.disabled = false; };
   } catch (err) {
     note(`Could not start: ${err.message}`);
-    run.disabled = false;
+    find.disabled = false;
   }
 }
 
@@ -107,6 +158,7 @@ function handle(ev) {
   switch (ev.type) {
     case "handshake": return note(ev.text);
     case "thinking": return log(ev.role, ev.step, ev.detail);
+    case "common_ground": return renderCommon(ev);
     case "fit": return renderFit(ev.role, ev.label, ev.fit);
     case "message": return letter(ev.message, ev.flags);
     case "checks": return stampChecks(ev);
@@ -213,6 +265,18 @@ function stampChecks(ev) {
 }
 
 /* desks */
+function renderCommon(ev) {
+  const box = $('#desk-requester [data-slot="common"]');
+  const points = ev.points || [];
+  if (!points.length) {
+    box.replaceChildren(h("p", { class: "empty" }, "No shared points yet; the agent will ask to learn more."));
+    return;
+  }
+  box.replaceChildren(
+    h("p", { class: "common-score" }, h("strong", {}, `${Math.round((ev.fit || 0) * 100)}%`), h("span", {}, "overlap signal")),
+    h("ul", { class: "common-rows" }, points.map((p) => h("li", {}, p))));
+}
+
 function renderFit(role, label, fit) {
   const desk = $(`#desk-${role}`);
   desk.querySelector('[data-slot="fit-label"]').textContent = label;
@@ -288,39 +352,117 @@ function onBooked(ev) {
 /* ---------------- knowledge graphs ---------------- */
 let graphState = { person: null, selected: null };
 
-function initGraphs() {
-  $("#ingest-interview").addEventListener("click", async () => {
-    const text = $("#interview").value.trim();
-    if (!graphState.person) return status("Pick a person first.");
-    if (!text) return status("Paste some of what the person said first.");
-    status("Extracting facts...");
-    try {
-      const r = await post(`/api/people/${graphState.person}/ingest/interview`, { transcript: text });
-      status(r.added.length ? `Added ${r.added.length} facts: ${r.added.map((a) => a.label).join(", ")}.` : "No facts found. Try sentences like \"I work at...\" or \"I love...\".");
-      $("#interview").value = "";
-      openGraph(graphState.person);
-    } catch (err) { status(`Could not extract facts: ${err.message}`); }
-  });
-  $("#ingest-github").addEventListener("click", async () => {
-    const username = $("#gh").value.trim();
-    if (!graphState.person) return status("Pick a person first.");
-    if (!username) return status("Enter a GitHub username first.");
-    status("Importing repos...");
-    try {
-      const r = await post(`/api/people/${graphState.person}/ingest/github`, { username });
-      status(`Added ${r.added.length} repos.`);
-      openGraph(graphState.person);
-    } catch (err) { status(`${err.message}. Set GITHUB_TOKEN in .env if you hit rate limits.`); }
-  });
+async function initGraphs() {
+  [ui.connectors, ui.intents] = await Promise.all([api("/api/connectors"), api("/api/intents")]);
+  renderConnectors();
+  $("#create-user").addEventListener("click", createUser);
 }
 const status = (t) => ($("#ingest-status").textContent = t);
 
+async function createUser() {
+  const name = $("#new-name").value.trim();
+  if (!name) return status("Enter a name for the new agent.");
+  try {
+    const u = await post("/api/users", { name, headline: $("#new-headline").value.trim() });
+    $("#new-name").value = ""; $("#new-headline").value = "";
+    await loadPeople();
+    openGraph(u.id);
+    status(`Created ${u.name}. Now connect sources to build the graph.`);
+  } catch (err) { status(`Could not create agent: ${err.message}`); }
+}
+
+function renderConnectors() {
+  const box = $("#connectors");
+  if (!box || !ui.connectors) return;
+  box.replaceChildren(...ui.connectors.map((c) => {
+    if (c.accepts === "file") {
+      const input = h("input", { type: "file", class: "conn-file", id: `file-${c.name}`, multiple: true });
+      const btn = h("button", { onclick: () => uploadFile(c.name, input) }, `Upload ${c.label}`);
+      return h("div", { class: "connector" }, h("label", { class: "conn-label" }, c.label),
+        h("p", { class: "hint" }, c.placeholder), input, btn);
+    }
+    const multiline = c.kind === "text";
+    const field = h(multiline ? "textarea" : "input", { class: "conn-field", id: `conn-${c.name}`,
+      placeholder: c.placeholder, rows: multiline ? 3 : undefined, autocomplete: "off" });
+    const btn = h("button", { onclick: () => connect(c.name, field) }, `Connect ${c.label}`);
+    return h("div", { class: "connector" }, h("label", { class: "conn-label" }, c.label), field, btn);
+  }));
+}
+
+function reportAdded(source, added) {
+  const nw = added.filter((a) => a.status !== "updated").length;
+  const up = added.length - nw;
+  status(added.length
+    ? `${source}: ${nw} new, ${up} updated — ${added.slice(0, 6).map((a) => a.label).join(", ")}${added.length > 6 ? "…" : ""}.`
+    : `No facts found from ${source}.`);
+}
+
+async function connect(source, field) {
+  if (!graphState.person) return status("Create or pick an agent first.");
+  const payload = field.value.trim();
+  if (!payload) return status(`Add your ${source} details first.`);
+  status(`Connecting ${source}...`);
+  try {
+    const r = await post(`/api/people/${graphState.person}/connect/${source}`, { payload });
+    reportAdded(source, r.added);
+    field.value = "";
+    openGraph(graphState.person);
+  } catch (err) { status(`Could not connect ${source}: ${err.message}`); }
+}
+
+async function uploadFile(source, input) {
+  if (!graphState.person) return status("Create or pick an agent first.");
+  const files = input.files ? [...input.files] : [];
+  if (!files.length) return status(`Choose your ${source} file(s) — the .zip, or all the .csv/.json files from the unzipped folder.`);
+  status(`Uploading ${files.length} file(s)...`);
+  const body = new FormData();
+  files.forEach((f) => body.append("files", f));
+  try {
+    const r = await api(`/api/people/${graphState.person}/upload/${source}`, { method: "POST", body });
+    reportAdded(source, r.added);
+    if (r.errors?.length) status(`${$("#ingest-status").textContent} (skipped: ${r.errors.join("; ")})`);
+    input.value = "";
+    openGraph(graphState.person);
+  } catch (err) { status(`Could not import ${source}: ${err.message}`); }
+}
+
+function renderIntents(current) {
+  const box = $("#intents");
+  if (!box || !ui.intents) return;
+  const set = new Set(current || []);
+  box.replaceChildren(...ui.intents.map((it) => {
+    const on = set.has(it.id);
+    return h("button", { class: `chip${on ? " on" : ""}`, "aria-pressed": String(on),
+      onclick: () => toggleIntent(it.id) }, it.label);
+  }));
+}
+
+async function toggleIntent(id) {
+  if (!graphState.person) return;
+  const g = await api(`/api/people/${graphState.person}/intents`);
+  const set = new Set(g.intents);
+  set.has(id) ? set.delete(id) : set.add(id);
+  const r = await api(`/api/people/${graphState.person}/intents`, {
+    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ intents: [...set] }) });
+  renderIntents(r.intents);
+}
+
 async function loadPeople() {
-  const people = await api("/api/people");
+  const people = await api("/api/people?include_demo=true");
+  const mine = people.filter((p) => !p.meta?.demo);
+  const sample = people.filter((p) => p.meta?.demo);
   const list = $("#people-list");
-  list.replaceChildren(...people.map((p) =>
-    h("li", {}, h("button", { "data-id": p.id, onclick: () => openGraph(p.id) }, p.name, h("small", {}, `${p.headline} (${p.nodes} facts)`)))));
-  if (!graphState.person && people.length) openGraph(people[0].id);
+  const row = (p) => h("li", {}, h("button", { "data-id": p.id, onclick: () => openGraph(p.id) },
+    p.name, h("small", {}, `${p.headline || "No headline yet"} · ${p.nodes} facts`)));
+  const kids = [...mine.map(row)];
+  if (sample.length) {
+    kids.push(h("li", { class: "group-label" }, "Sample network"));
+    kids.push(...sample.map(row));
+  }
+  list.replaceChildren(...kids);
+  $("#people-empty").hidden = people.length > 0;
+  if (!graphState.person && mine.length) openGraph(mine[0].id);
+  else if (!graphState.person && people.length) openGraph(people[0].id);
 }
 
 async function openGraph(id) {
@@ -329,6 +471,7 @@ async function openGraph(id) {
   const g = await api(`/api/people/${id}/graph`);
   $("#graph-name").textContent = g.name;
   $("#graph-headline").textContent = g.headline;
+  renderIntents(g.meta?.intents || []);
   drawGraph(g);
 }
 

@@ -11,6 +11,7 @@ Edges: SUPPORTED_BY (fact -> Evidence), KNOWS (person -> person, with closeness)
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -81,13 +82,21 @@ class PersonalGraph:
         """Flatten disclosable facts -> (facts, source_node_for_key)."""
         facts: dict[str, Any] = {}
         source: dict[str, str] = {}
+
+        def add(k: str, v: Any, nid: str) -> None:
+            if isinstance(v, list):
+                prev = facts[k] if isinstance(facts.get(k), list) else []
+                facts[k] = list(dict.fromkeys(prev + [str(x).lower() for x in v]))
+                source.setdefault(k, nid)
+            else:
+                facts[k] = v
+                source[k] = nid  # scalar: the node holding the current value
+
         for n in self.nodes(types=types, tiers=tiers):
             for k, v in n["attrs"].get("facts", {}).items():
-                facts[k] = v
-                source[k] = n["id"]
+                add(k, v, n["id"])
             if n["type"] == "Interest":
-                facts.setdefault("interests", []).append(n["label"].lower())
-                source.setdefault("interests", n["id"])
+                add("interests", [n["label"].lower()], n["id"])
             if n["type"] == "Availability":
                 facts.setdefault("availability", []).append(
                     {"start": n["attrs"]["start"], "end": n["attrs"]["end"]})
@@ -171,10 +180,34 @@ def get_graph(person_id: str) -> PersonalGraph:
     return _cache[person_id]
 
 
-def list_people() -> list[dict[str, Any]]:
+def _slugify(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", (text or "").lower()).strip("_")[:32] or "user"
+
+
+def create_person(name: str, headline: str = "") -> PersonalGraph:
+    """Start a new, empty real user: just a Person node. Sources fill in the rest."""
+    base = _slugify(name)
+    pid, i = base, 1
+    while (PEOPLE_DIR / f"{pid}.json").exists():
+        i += 1
+        pid = f"{base}{i}"
+    g = PersonalGraph({"id": pid, "name": name.strip() or pid, "headline": headline.strip(),
+                       "meta": {"created": True},
+                       "nodes": [{"id": pid, "type": "Person", "label": name.strip() or pid,
+                                  "tier": "public", "source": "self", "attrs": {}}],
+                       "edges": []})
+    PEOPLE_DIR.mkdir(parents=True, exist_ok=True)
+    g.save()
+    _cache[pid] = g
+    return g
+
+
+def list_people(include_demo: bool = False) -> list[dict[str, Any]]:
     out = []
     for path in sorted(PEOPLE_DIR.glob("*.json")):
         g = get_graph(path.stem)
+        if g.meta.get("demo") and not include_demo:  # fixtures stay out of the live app
+            continue
         out.append({"id": g.id, "name": g.name, "headline": g.headline, "meta": g.meta,
                     "nodes": g.g.number_of_nodes(), "edges": g.g.number_of_edges()})
     return out

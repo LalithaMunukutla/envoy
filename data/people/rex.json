@@ -3,9 +3,13 @@
   "name": "Rex Calloway",
   "headline": "Founder, Quickflip AI",
   "meta": {
+    "demo": true,
     "role": "founder",
     "company": "Quickflip AI",
-    "adversarial": true
+    "adversarial": true,
+    "intents": [
+      "raising"
+    ]
   },
   "nodes": [
     {

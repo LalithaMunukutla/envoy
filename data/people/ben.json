@@ -3,7 +3,11 @@
   "name": "Ben Adeyemi",
   "headline": "Teacher, board game host",
   "meta": {
-    "role": "friend"
+    "demo": true,
+    "role": "friend",
+    "intents": [
+      "friends"
+    ]
   },
   "nodes": [
     {

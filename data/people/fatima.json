@@ -1,0 +1,166 @@
+{
+  "id": "fatima",
+  "name": "Fatima Noor",
+  "headline": "Founder, AgriSense (agri-hardware)",
+  "meta": {
+    "demo": true,
+    "role": "founder",
+    "company": "AgriSense",
+    "intents": [
+      "raising"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "fatima",
+      "type": "Person",
+      "label": "Fatima Noor",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "role": "Founder",
+        "city": "Faisalabad"
+      }
+    },
+    {
+      "id": "co_agrisense",
+      "type": "Work",
+      "label": "AgriSense",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "one_liner": "AgriSense builds soil-sensor hardware and crop analytics for smallholder farms.",
+        "facts": {
+          "stage": "seed",
+          "sectors": [
+            "agritech",
+            "hardware",
+            "iot"
+          ],
+          "geography": "Pakistan"
+        },
+        "statements": {
+          "stage": "AgriSense is raising its seed round",
+          "sectors": "AgriSense is an agritech hardware and IoT company"
+        }
+      }
+    },
+    {
+      "id": "goal_fatima",
+      "type": "Goal",
+      "label": "Raising a $500k seed round",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "check_ask": 500000
+        },
+        "statements": {
+          "check_ask": "Fatima is raising a $500,000 seed round"
+        }
+      }
+    },
+    {
+      "id": "tr_fatima",
+      "type": "Traction",
+      "label": "120 farms piloting the sensors",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "traction": "120 farms piloting"
+        },
+        "statements": {
+          "traction": "120 farms are piloting AgriSense sensors"
+        }
+      }
+    },
+    {
+      "id": "ach_fatima_team",
+      "type": "Achievement",
+      "label": "Team of ex-agronomists and hardware engineers",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "statements": {
+          "team": "Fatima's team are ex-agronomists and hardware engineers"
+        }
+      }
+    },
+    {
+      "id": "av_f1",
+      "type": "Availability",
+      "label": "Wed Nov 11, 09:00 to 10:00",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "start": "2026-11-11T09:00",
+        "end": "2026-11-11T10:00"
+      }
+    },
+    {
+      "id": "mandate_fatima",
+      "type": "Mandate",
+      "label": "Agent mandate for investor outreach",
+      "tier": "private",
+      "source": "demo",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "shareable_tier": "fit",
+        "max_meeting_min": 45,
+        "allowed_proposals": [
+          "meeting",
+          "call"
+        ]
+      }
+    },
+    {
+      "id": "ev_agrisense",
+      "type": "Evidence",
+      "label": "AgriSense pilot report",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "kind": "doc",
+        "ref": "https://example.com/agrisense/pilot"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "fatima",
+      "target": "co_agrisense",
+      "type": "FOUNDED"
+    },
+    {
+      "source": "tr_fatima",
+      "target": "ev_agrisense",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "fatima",
+      "target": "goal_fatima",
+      "type": "HAS"
+    },
+    {
+      "source": "fatima",
+      "target": "tr_fatima",
+      "type": "HAS"
+    },
+    {
+      "source": "fatima",
+      "target": "ach_fatima_team",
+      "type": "HAS"
+    },
+    {
+      "source": "fatima",
+      "target": "av_f1",
+      "type": "HAS"
+    },
+    {
+      "source": "fatima",
+      "target": "mandate_fatima",
+      "type": "HAS"
+    }
+  ]
+}

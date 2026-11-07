@@ -88,16 +88,20 @@ class ReceiverAgent:
             await self.think("Decision policy", f"Decline: mismatch on {', '.join(fit.failed)} (score {fit.score:.2f}).")
             return self._reply("decline", templates.receiver_text("decline", me=self.me, them=self.them, pack=self.pack, reason=reason))
 
-        missing = [c for c in fit.missing if c.fact not in self.asked][:2]
-        diligence = [k for k in self.pack.diligence if k not in self.known and k not in self.asked][:2] \
-            if self.pack.persuasion_level >= 2 else []
-        if missing or diligence:
-            keys = [c.fact for c in missing] + diligence
-            questions = [c.ask for c in missing] + [self.pack.diligence[k] for k in diligence]
+        missing = [(c.fact, c.ask) for c in fit.missing if c.fact not in self.asked]
+        diligence = [(k, self.pack.diligence[k]) for k in self.pack.diligence
+                     if k not in self.known and k not in self.asked] if self.pack.persuasion_level >= 2 else []
+        # Ask ONE thing per turn (the most decision-relevant), so diligence reads as a real exchange.
+        to_ask = (missing + diligence)[:1]
+        if to_ask:
+            keys = [k for k, _ in to_ask]
             self.asked.update(keys)
-            await self.think("Question generator", f"Asking about {', '.join(keys)}: the answers would change the decision most.")
-            return self._reply("request_info", templates.receiver_text("request_info", me=self.me, them=self.them,
-                                                                       pack=self.pack, questions=questions), requested=keys)
+            ack = f"Noted: {', '.join(c.statement for c in msg.claims if c.verified)}. " if any(c.verified for c in msg.claims) else ""
+            await self.think("Question generator", f"Interest {self.interest_history[-1]}/5. Asking about {keys[0]}: "
+                             "it's the answer that would move the decision most right now.")
+            return self._reply("request_info", ack + templates.receiver_text("request_info", me=self.me, them=self.them,
+                                                                             pack=self.pack, questions=[q for _, q in to_ask]),
+                               requested=keys)
 
         if self.pending:
             act, slot, dur = self.choose_slot(self.pending)

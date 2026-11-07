@@ -20,6 +20,7 @@ def e(source, target, type):
 
 
 def person(pid, name, headline, meta, nodes, edges):
+    meta = {"demo": True, **(meta or {})}
     has = [e(pid, x["id"], "HAS") for x in nodes if x["id"] != pid and x["type"] != "Evidence"
            and not any(ed["source"] == pid and ed["target"] == x["id"] for ed in edges)]
     return {"id": pid, "name": name, "headline": headline, "meta": meta, "nodes": nodes, "edges": edges + has}
@@ -29,7 +30,7 @@ people = []
 
 # ---------------- Founders ----------------
 people.append(person(
-    "maya", "Maya Chen", "Founder and CEO, Lumen Labs", {"role": "founder", "company": "Lumen Labs"},
+    "maya", "Maya Chen", "Founder and CEO, Lumen Labs", {"role": "founder", "company": "Lumen Labs", "intents": ["raising"]},
     [
         n("maya", "Person", "Maya Chen", "public", role="Founder and CEO", city="San Francisco"),
         n("co_lumen", "Work", "Lumen Labs", "public",
@@ -69,7 +70,7 @@ people.append(person(
 ))
 
 people.append(person(
-    "rex", "Rex Calloway", "Founder, Quickflip AI", {"role": "founder", "company": "Quickflip AI", "adversarial": True},
+    "rex", "Rex Calloway", "Founder, Quickflip AI", {"role": "founder", "company": "Quickflip AI", "adversarial": True, "intents": ["raising"]},
     [
         n("rex", "Person", "Rex Calloway", "public", role="Founder"),
         n("co_quickflip", "Work", "Quickflip AI", "public",
@@ -88,7 +89,7 @@ people.append(person(
 
 # ---------------- Investors ----------------
 people.append(person(
-    "dana", "Dana Ruiz", "Partner, Northbeam Ventures", {"role": "investor", "firm": "Northbeam Ventures"},
+    "dana", "Dana Ruiz", "Partner, Northbeam Ventures", {"role": "investor", "firm": "Northbeam Ventures", "intents": ["investing"]},
     [
         n("dana", "Person", "Dana Ruiz", "public", role="Partner"),
         n("firm_northbeam", "Work", "Northbeam Ventures", "public",
@@ -110,7 +111,7 @@ people.append(person(
 ))
 
 people.append(person(
-    "sam", "Sam Okafor", "Partner, Harbor Growth", {"role": "investor", "firm": "Harbor Growth"},
+    "sam", "Sam Okafor", "Partner, Harbor Growth", {"role": "investor", "firm": "Harbor Growth", "intents": ["investing"]},
     [
         n("sam", "Person", "Sam Okafor", "public", role="Partner"),
         n("firm_harbor", "Work", "Harbor Growth", "public", one_liner="Growth fund for software companies."),
@@ -128,7 +129,7 @@ people.append(person(
 
 # ---------------- Friends ----------------
 people.append(person(
-    "asha", "Asha Rao", "Product designer, lives in the Mission", {"role": "friend"},
+    "asha", "Asha Rao", "Product designer, lives in the Mission", {"role": "friend", "intents": ["friends"]},
     [
         n("asha", "Person", "Asha Rao", "public", neighborhood="Mission, San Francisco"),
         n("int_a1", "Interest", "Climbing", "public"),
@@ -143,7 +144,7 @@ people.append(person(
 ))
 
 people.append(person(
-    "priya", "Priya Natarajan", "Data scientist, climbs on weekends", {"role": "friend"},
+    "priya", "Priya Natarajan", "Data scientist, climbs on weekends", {"role": "friend", "intents": ["friends"]},
     [
         n("priya", "Person", "Priya Natarajan", "public"),
         n("int_p1", "Interest", "Climbing", "public"),
@@ -157,7 +158,7 @@ people.append(person(
 ))
 
 people.append(person(
-    "ben", "Ben Adeyemi", "Teacher, board game host", {"role": "friend"},
+    "ben", "Ben Adeyemi", "Teacher, board game host", {"role": "friend", "intents": ["friends"]},
     [
         n("ben", "Person", "Ben Adeyemi", "public"),
         n("int_b1", "Interest", "Board games", "public"),
@@ -172,7 +173,7 @@ people.append(person(
 
 # ---------------- Event attendees ----------------
 people.append(person(
-    "leo", "Leo Park", "ML engineer building an agent eval tool", {"role": "attendee"},
+    "leo", "Leo Park", "ML engineer building an agent eval tool", {"role": "attendee", "intents": ["networking"]},
     [
         n("leo", "Person", "Leo Park", "public", role="ML engineer"),
         n("work_leo", "Work", "Building an open-source agent eval tool", "public",
@@ -190,7 +191,7 @@ people.append(person(
 ))
 
 people.append(person(
-    "nia", "Nia Okoro", "Product designer exploring agent UX", {"role": "attendee"},
+    "nia", "Nia Okoro", "Product designer exploring agent UX", {"role": "attendee", "intents": ["networking"]},
     [
         n("nia", "Person", "Nia Okoro", "public", role="Product designer"),
         n("work_nia", "Work", "Designing interfaces for AI agents", "public",

@@ -3,7 +3,11 @@
   "name": "Asha Rao",
   "headline": "Product designer, lives in the Mission",
   "meta": {
-    "role": "friend"
+    "demo": true,
+    "role": "friend",
+    "intents": [
+      "friends"
+    ]
   },
   "nodes": [
     {

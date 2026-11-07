@@ -1,0 +1,240 @@
+{
+  "id": "zara",
+  "name": "Zara Sheikh",
+  "headline": "Partner, Indus Ventures",
+  "meta": {
+    "demo": true,
+    "role": "investor",
+    "firm": "Indus Ventures",
+    "intents": [
+      "investing"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "zara",
+      "type": "Person",
+      "label": "Zara Sheikh",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "role": "Partner",
+        "city": "Dubai"
+      }
+    },
+    {
+      "id": "firm_indus",
+      "type": "Work",
+      "label": "Indus Ventures",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "one_liner": "Indus Ventures backs pre-seed and seed founders in immersive tech, legaltech and applied AI across Pakistan and South Asia."
+      }
+    },
+    {
+      "id": "prio_zara",
+      "type": "Priority",
+      "label": "Thesis: immersive, legaltech & AI across South Asia",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "stages": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectors": [
+            "immersive tech",
+            "augmented reality",
+            "virtual reality",
+            "legaltech",
+            "ai",
+            "devtools"
+          ],
+          "check_min": 100000,
+          "check_max": 750000,
+          "geographies": [
+            "pakistan",
+            "lahore, punjab, pakistan",
+            "south asia",
+            "uae",
+            "global"
+          ]
+        }
+      }
+    },
+    {
+      "id": "limit_zara",
+      "type": "Limit",
+      "label": "Avoids crypto, gambling and pure hardware",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "anti": [
+            "crypto",
+            "gambling",
+            "hardware"
+          ]
+        }
+      }
+    },
+    {
+      "id": "ach_zara_exit",
+      "type": "Achievement",
+      "label": "Ex-founder; sold an AR startup to a global platform",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "statements": {
+          "bg": "Zara founded and exited an AR startup before investing"
+        }
+      }
+    },
+    {
+      "id": "ach_zara_portfolio",
+      "type": "Achievement",
+      "label": "Led 14 immersive-tech seed rounds",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "statements": {
+          "portfolio": "Zara has led 14 immersive-tech seed rounds (ImmersaLearn, LexAI, VRSurgeon)"
+        }
+      }
+    },
+    {
+      "id": "cap_zara",
+      "type": "Priority",
+      "label": "Three intro calls a week",
+      "tier": "private",
+      "source": "demo",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "weekly_calls": 3
+        }
+      }
+    },
+    {
+      "id": "av_z1",
+      "type": "Availability",
+      "label": "Wed Nov 11, 15:30 to 16:30",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "start": "2026-11-11T15:30",
+        "end": "2026-11-11T16:30"
+      }
+    },
+    {
+      "id": "av_z2",
+      "type": "Availability",
+      "label": "Thu Nov 12, 10:00 to 11:00",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "start": "2026-11-12T10:00",
+        "end": "2026-11-12T11:00"
+      }
+    },
+    {
+      "id": "mandate_zara",
+      "type": "Mandate",
+      "label": "Gatekeeper mandate",
+      "tier": "private",
+      "source": "demo",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "shareable_tier": "public",
+        "max_meeting_min": 30,
+        "allowed_proposals": [
+          "meeting",
+          "call"
+        ]
+      }
+    },
+    {
+      "id": "ev_indus_site",
+      "type": "Evidence",
+      "label": "Indus Ventures website",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "kind": "url",
+        "ref": "https://example.com/indus"
+      }
+    },
+    {
+      "id": "ev_zara_exit",
+      "type": "Evidence",
+      "label": "Acquisition announcement",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "kind": "url",
+        "ref": "https://example.com/zara/exit"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "zara",
+      "target": "firm_indus",
+      "type": "PARTNER_AT"
+    },
+    {
+      "source": "prio_zara",
+      "target": "ev_indus_site",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "ach_zara_exit",
+      "target": "ev_zara_exit",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "zara",
+      "target": "prio_zara",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "limit_zara",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "ach_zara_exit",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "ach_zara_portfolio",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "cap_zara",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "av_z1",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "av_z2",
+      "type": "HAS"
+    },
+    {
+      "source": "zara",
+      "target": "mandate_zara",
+      "type": "HAS"
+    }
+  ]
+}

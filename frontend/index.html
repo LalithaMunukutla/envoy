@@ -20,9 +20,11 @@
       <button role="tab" aria-selected="false" data-view="graphs">Knowledge graphs</button>
     </nav>
     <div class="run">
-      <label class="visually-hidden" for="scenario">Scenario</label>
-      <select id="scenario"></select>
-      <button id="run" class="primary">Start session</button>
+      <label class="visually-hidden" for="me-select">Your agent</label>
+      <select id="me-select" title="Your agent"></select>
+      <label class="visually-hidden" for="seeking">Looking for</label>
+      <select id="seeking" title="What you're looking for"></select>
+      <button id="find" class="primary">Find matches</button>
       <span id="mode" class="mode"></span>
     </div>
   </header>
@@ -31,8 +33,10 @@
     <section id="view-negotiation" class="view">
       <div class="sessionbar">
         <ol class="route" id="route" aria-label="Session progress"></ol>
-        <p class="pack-line" id="pack-line">Pick a scenario and start a session to watch two agents negotiate.</p>
+        <p class="pack-line" id="pack-line">Pick your agent and what you're looking for, then find people to connect with.</p>
       </div>
+
+      <section id="matches" class="matches" hidden aria-label="Potential matches"></section>
 
       <div class="hall">
         <aside class="desk desk-requester" id="desk-requester" aria-label="Requester agent">
@@ -44,6 +48,10 @@
           <div class="panel">
             <h3 data-slot="fit-label">Fit check</h3>
             <div data-slot="fit"><p class="empty">Runs on public information before any message is sent.</p></div>
+          </div>
+          <div class="panel">
+            <h3>Common ground</h3>
+            <div data-slot="common"><p class="empty">Shared points the agent leads with, found before reaching out.</p></div>
           </div>
           <div class="panel grow">
             <h3>What the agent is doing</h3>
@@ -94,8 +102,14 @@
     <section id="view-graphs" class="view" hidden>
       <div class="graphs">
         <aside class="people panel" aria-label="People">
-          <h3>People</h3>
+          <h3>Your agents</h3>
           <ul id="people-list"></ul>
+          <p id="people-empty" class="empty" hidden>No agents yet. Create one, then connect your sources.</p>
+          <div class="new-user">
+            <input id="new-name" placeholder="Full name" autocomplete="off">
+            <input id="new-headline" placeholder="Headline (optional)" autocomplete="off">
+            <button id="create-user" class="primary">Create agent</button>
+          </div>
         </aside>
         <div class="graph-stage">
           <div class="graph-head">
@@ -118,16 +132,14 @@
             <div id="node-detail"><p class="empty">Click a node to see its tier, source and evidence.</p></div>
           </div>
           <div class="panel">
-            <h3>Add facts from an interview</h3>
-            <label for="interview" class="visually-hidden">Interview transcript</label>
-            <textarea id="interview" rows="5" placeholder="Paste what the person said. For example: I work at Figma. I love bouldering. We're looking for a co-founder."></textarea>
-            <button id="ingest-interview">Extract facts</button>
+            <h3>What they're here for</h3>
+            <p class="hint">Pick what this person wants. Agents only meet when two people's intents line up.</p>
+            <div id="intents" class="intents"></div>
           </div>
           <div class="panel">
-            <h3>Add public repos from GitHub</h3>
-            <label for="gh" class="visually-hidden">GitHub username</label>
-            <input id="gh" placeholder="GitHub username" autocomplete="off">
-            <button id="ingest-github">Import repos</button>
+            <h3>Connect sources</h3>
+            <p class="hint">Build the graph from the person's own activity. Each fact keeps a link back to its source.</p>
+            <div id="connectors"></div>
             <p id="ingest-status" class="status" role="status"></p>
           </div>
         </aside>
