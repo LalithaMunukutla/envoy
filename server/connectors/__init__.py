@@ -10,13 +10,13 @@ import time
 
 from ..knowledge.graph import PersonalGraph
 from .base import Connector, apply
-from .sources import (GithubConnector, InstagramConnector, InterviewConnector,
-                      LinkedInConnector, PortfolioConnector)
+from .sources import (GithubConnector, GoogleCalendarConnector, InstagramConnector,
+                      InterviewConnector, LinkedInConnector, PortfolioConnector)
 
 REGISTRY: dict[str, Connector] = {
     c.name: c for c in (
         LinkedInConnector(), PortfolioConnector(), InstagramConnector(),
-        GithubConnector(), InterviewConnector(),
+        GithubConnector(), GoogleCalendarConnector(), InterviewConnector(),
     )
 }
 

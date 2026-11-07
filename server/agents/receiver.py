@@ -6,12 +6,19 @@ from datetime import datetime, timedelta
 
 from ..knowledge.graph import PersonalGraph
 from ..llm import llm
+from ..persuasion import NegotiationState, classify_resistance, craft_objection
 from ..schemas import AgentMessage, Pack, Proposal, Sender
 from . import templates, verifier
 from .fit import best_overlap, score_fit
 from .requester import Emit, analyze
 
 ALL_TIERS = {"public", "fit", "approval", "private"}
+
+# Level 2 (founder-to-investor style) receivers require one objection resolved
+# and interest at or above this before they accept. Keeps the pitch loop real
+# instead of closing on the first fit hit.
+OBJECTION_MIN_INTEREST = 3.5
+ACCEPT_MIN_INTEREST = 4.0
 
 
 class ReceiverAgent:
@@ -28,6 +35,10 @@ class ReceiverAgent:
         self.turn = 0
         self.last_fit = None
         self.interest_history: list[float] = []
+        # Persuasion state (PieArena shared-intentionality tracker).
+        self.pstate = NegotiationState(role="receiver")
+        self.objections_raised: set[str] = set()
+        self.objection_resolved: bool = False
 
     async def think(self, step: str, detail: str, data=None):
         await self.emit("thinking", role=self.role, step=step, detail=detail, data=data)
@@ -53,6 +64,9 @@ class ReceiverAgent:
         self.turn += 1
         await analyze(self.role, msg, self.emit)
 
+        # 0. State tracking (PieArena): record what the founder just did.
+        rtype_from_them = self.pstate.observe(msg.text, msg.act, msg.requested)
+
         # 1. Claims and evidence
         bundle = {e.id for e in msg.evidence}
         for c in msg.claims:
@@ -66,11 +80,27 @@ class ReceiverAgent:
         await self.think("Evidence check", f"{verified} of {len(msg.claims)} claims carry evidence"
                          + (f"; flagged: {problems[0]}" if problems else "."))
 
+        # Objection resolution: if we raised an objection, mark it resolved once
+        # the founder's answer carries at least one evidence-backed claim OR
+        # explicitly addresses one of the objection keys we asked about.
+        if self.objections_raised and not self.objection_resolved:
+            addressed = {c.key for c in msg.claims if c.key} & self.objections_raised
+            if verified >= 1 or addressed or msg.act == "answer":
+                self.objection_resolved = True
+                self.pstate.objections_resolved += 1
+                await self.emit("objection", role=self.role, status="resolved",
+                                keys=sorted(self.objections_raised),
+                                detail="Founder countered with evidence; opening to accept.")
+
         # 2. Fit against private priorities
         fit = score_fit(self.pack, self.known, self.prefs)
         self.last_fit = fit
         interest = round(1 + 4 * fit.score * fit.coverage - (0.5 if problems else 0), 1)
+        # A resolved objection is a positive signal: nudge interest up to reflect it.
+        if self.objection_resolved and self.interest_history:
+            interest = round(min(5.0, interest + 0.5), 1)
         self.interest_history.append(max(1.0, interest))
+        self.pstate.interest_trajectory = list(self.interest_history)
         await self.emit("fit", role=self.role, label="Fit against private priorities", fit=fit.as_dict())
         await self.emit("score", role=self.role, turn=msg.turn, interest=self.interest_history[-1],
                         history=self.interest_history)
@@ -102,6 +132,36 @@ class ReceiverAgent:
             return self._reply("request_info", ack + templates.receiver_text("request_info", me=self.me, them=self.them,
                                                                              pack=self.pack, questions=[q for _, q in to_ask]),
                                requested=keys)
+
+        # NEW: for level-2 packs (investor-style), raise ONE objection before
+        # accepting, even when fit is good. This is the pitch loop: the founder
+        # has to actually convince, not just coordinate. Skipped on level 0/1.
+        if (self.pack.persuasion_level >= 2 and not self.objections_raised
+                and self.interest_history[-1] >= OBJECTION_MIN_INTEREST
+                and fit.coverage >= self.pack.min_coverage * 0.75):
+            obj = craft_objection(fit, msg.claims, self.known, self.objections_raised)
+            if obj:
+                self.objections_raised.add(obj["key"])
+                self.asked.add(obj["key"])
+                await self.emit("objection", role=self.role, status="raised",
+                                key=obj["key"], detail=obj["text"][:120])
+                await self.think("Objection", f"Interest {self.interest_history[-1]}/5 but I need to push: "
+                                 f"{obj['key']}. Founder has to address this before I take a call.")
+                return self._reply("request_info", obj["text"], requested=[obj["key"]])
+
+        # Guard: don't accept until any raised objection has been resolved AND
+        # interest clears the accept gate. Keeps the pitch honest.
+        if (self.pack.persuasion_level >= 2 and self.objections_raised
+                and not self.objection_resolved):
+            await self.think("Hold", "Objection still open; waiting on a counter with evidence.")
+            return self._reply("request_info",
+                               f"Still want the answer on: {', '.join(sorted(self.objections_raised))}.",
+                               requested=sorted(self.objections_raised))
+        if (self.pack.persuasion_level >= 2 and self.pending
+                and self.interest_history[-1] < ACCEPT_MIN_INTEREST):
+            await self.think("Hold", f"Interest {self.interest_history[-1]}/5 under accept gate ({ACCEPT_MIN_INTEREST}); "
+                             "asking one more thing before saying yes.")
+            # Fall through to pick a question if any; otherwise soft decline below.
 
         if self.pending:
             act, slot, dur = self.choose_slot(self.pending)

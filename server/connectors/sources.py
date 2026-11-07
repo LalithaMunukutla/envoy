@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 import re
+from datetime import datetime, time, timedelta
 
 import httpx
 
@@ -97,6 +98,106 @@ class GithubConnector(Connector):
             attrs={"language": repo.get("language"), "description": repo.get("description")},
             evidence_ref=repo["html_url"], evidence_kind="repo", evidence_summary=f"GitHub: {repo['full_name']}")
             for repo in repos]
+
+
+class GoogleCalendarConnector(Connector):
+    """Google Calendar: ingest an .ics export.
+
+    Google Calendar settings -> Export -> `.ics` file. We parse VEVENT blocks as
+    BUSY intervals, subtract them from a working week (default Mon-Fri 9-18 local)
+    and emit the resulting FREE windows as Availability nodes. Each node carries
+    the calendar export as evidence, so the fit scorer can prove where free time
+    came from. Live-fetching via OAuth would drop into this same shape later."""
+    name, label, kind, accepts = "google_calendar", "Google Calendar", "file", "file"
+    placeholder = ("Upload your .ics export (Google Calendar -> Settings -> "
+                   "Import & Export -> Export). Paste raw ICS text also works.")
+
+    async def extract_file(self, filename: str, data: bytes) -> list[FactSpec]:
+        return _ics_to_availability(data.decode("utf-8", "ignore"))
+
+    async def extract(self, payload: str) -> list[FactSpec]:
+        return _ics_to_availability(payload)
+
+
+_ICS_DT_LINE = re.compile(r"^(DTSTART|DTEND)(?:;[^:\n]*)?:([^\r\n]+)", re.M)
+_ICS_EVENT = re.compile(r"BEGIN:VEVENT(.*?)END:VEVENT", re.S)
+
+
+def _parse_ics_dt(raw: str) -> datetime | None:
+    raw = raw.strip()
+    try:
+        if "T" in raw:
+            return datetime.strptime(raw.rstrip("Z"), "%Y%m%dT%H%M%S")
+        if len(raw) == 8 and raw.isdigit():
+            return datetime.strptime(raw, "%Y%m%d")
+    except Exception:
+        return None
+    return None
+
+
+def _parse_events(text: str) -> list[tuple[datetime, datetime]]:
+    out: list[tuple[datetime, datetime]] = []
+    for m in _ICS_EVENT.finditer(text or ""):
+        block = m.group(1)
+        start = end = None
+        for kv in _ICS_DT_LINE.finditer(block):
+            key, val = kv.group(1), kv.group(2).strip()
+            dt = _parse_ics_dt(val)
+            if key == "DTSTART":
+                start = dt
+            else:
+                end = dt
+        if start and end and end > start:
+            out.append((start, end))
+    return out
+
+
+def _free_windows(busy: list[tuple[datetime, datetime]], base: datetime,
+                   days: int = 10, work_start: int = 9, work_end: int = 18) -> list[tuple[datetime, datetime]]:
+    """Subtract busy intervals from a working week; return free windows >= 30 min."""
+    out: list[tuple[datetime, datetime]] = []
+    busy_sorted = sorted(busy)
+    for d in range(days):
+        day = (base + timedelta(days=d)).date()
+        if day.weekday() >= 5:
+            continue
+        ws = datetime.combine(day, time(work_start))
+        we = datetime.combine(day, time(work_end))
+        day_busy = sorted([(max(s, ws), min(e, we)) for s, e in busy_sorted if s < we and e > ws])
+        cur = ws
+        for s, e in day_busy:
+            if s > cur:
+                out.append((cur, s))
+            cur = max(cur, e)
+        if cur < we:
+            out.append((cur, we))
+    return [(s, e) for s, e in out if (e - s).total_seconds() >= 30 * 60][:8]
+
+
+def _ics_to_availability(text: str) -> list[FactSpec]:
+    """Return FactSpecs for the free windows across the next ~10 weekdays."""
+    busy = _parse_events(text)
+    # Anchor the week either at today or at the first event in the file; this makes
+    # a demo-export with far-future dates still produce useful windows.
+    base = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    if busy:
+        future = [s for s, _ in busy if s >= base]
+        if future:
+            base = min(future).replace(hour=0, minute=0, second=0, microsecond=0)
+        else:
+            base = min(s for s, _ in busy).replace(hour=0, minute=0, second=0, microsecond=0)
+    windows = _free_windows(busy, base)
+    specs: list[FactSpec] = []
+    for s, e in windows:
+        label = f"{s:%a %b} {s.day}, {s:%H:%M} to {e:%H:%M}"
+        specs.append(FactSpec(
+            type="Availability", label=label[:80], tier="fit",
+            attrs={"start": s.isoformat(timespec="minutes"),
+                   "end": e.isoformat(timespec="minutes")},
+            evidence_ref="Google Calendar export",
+            evidence_kind="calendar",
+            evidence_summary=f"{len(busy)} busy blocks parsed; free slot shown"))
+    return specs
 
 
 class InterviewConnector(Connector):
