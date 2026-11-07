@@ -46,7 +46,8 @@ def _instagram_zip() -> bytes:
 
 # ---------- connectors + deep parsing ----------
 def test_registry_has_all_sources():
-    assert set(connectors.REGISTRY) == {"linkedin", "portfolio", "instagram", "github", "interview"}
+    assert set(connectors.REGISTRY) == {"linkedin", "portfolio", "instagram", "github",
+                                         "google_calendar", "interview"}
 
 
 def test_linkedin_zip_deep_parse():
@@ -159,7 +160,7 @@ def test_discovery_ranks_matches_by_intent():
 
 def test_platform_endpoints():
     with TestClient(app) as client:
-        assert len(client.get("/api/connectors").json()) == 5
+        assert len(client.get("/api/connectors").json()) == 6
         assert any(i["id"] == "raising" for i in client.get("/api/intents").json())
         cands = client.get("/api/match", params={"requester": "maya", "receiver": "dana"}).json()["candidates"]
         assert cands and cands[0]["pack"] == "founder_to_investor"

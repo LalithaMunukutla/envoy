@@ -8,6 +8,7 @@ from typing import Awaitable, Callable
 from ..knowledge.graph import PersonalGraph, tiers_upto
 from ..llm import llm
 from ..matching import common_ground, phrases
+from ..persuasion import NegotiationState, PitchIntent, plan_pitch
 from ..schemas import AgentMessage, Claim, Evidence, Intent, Pack, Proposal, Sender
 from ..store import recall
 from . import templates, verifier
@@ -55,6 +56,8 @@ class RequesterAgent:
         self.turn = 0
         self.adversarial = bool(me.meta.get("adversarial"))
         self.cg: dict = {}
+        self.pstate = NegotiationState(role="requester")
+        self.last_pitch: PitchIntent | None = None
 
     async def think(self, step: str, detail: str, data=None):
         await self.emit("thinking", role=self.role, step=step, detail=detail, data=data)
@@ -140,6 +143,23 @@ class RequesterAgent:
         if incoming.act == "request_info":
             have = [k for k in incoming.requested if k in self.facts]
             withheld = [k for k in incoming.requested if k not in self.facts]
+            # Level-2: route through the pitch planner. Classify resistance, pick
+            # a counter-strategy, add our strongest unmade claim on top of the
+            # requested keys, and stash the PitchIntent for the generator.
+            if self.pack.persuasion_level >= 2:
+                rtype = self.pstate.observe(incoming.text, incoming.act, incoming.requested)
+                pitch = plan_pitch(
+                    self.pack, self.facts, {}, self.pstate,
+                    incoming_text=incoming.text, resistance_type=rtype,
+                    common_ground_points=self.cg.get("points", []))
+                self.last_pitch = pitch
+                # Combine: their asked keys (we must answer) + planner-picked claims (we steer).
+                combined = list(dict.fromkeys(have + [k for k in pitch.claim_keys if k in self.facts]))
+                proposal = self.proposal() if pitch.move == "ask_for_meeting" else None
+                return Intent(
+                    act="answer", claim_ids=combined, withheld=withheld, proposal=proposal,
+                    note=f"[pitch] resistance={pitch.resistance_addressed} strategy={pitch.strategy}. "
+                         f"{pitch.rationale}")
             return Intent(act="answer", claim_ids=have, withheld=withheld, proposal=self.proposal(),
                           note="Answer with evidence, decline to share what the mandate holds back, then propose a time.")
         if incoming.act == "answer":
@@ -159,6 +179,14 @@ class RequesterAgent:
             intent.act, me=self.me, them=self.them, pack=self.pack, statements=[c.statement for c in claims],
             withheld=intent.withheld, proposal=intent.proposal, one_liner=one_liner if intent.act == "introduce" else "",
             focus=templates.join(shared))
+        # Pitch mode: prepend the acknowledgment + append the concession so the
+        # verifier still sees a fact-only message, but the counter reads like a
+        # real response to the objection.
+        pitch = self.last_pitch
+        if pitch and intent.act == "answer":
+            ack = pitch.acknowledgment
+            concession = pitch.concession
+            fallback = ((ack + " ") if ack else "") + fallback + ((" " + concession) if concession else "")
         if intent.act == "accept":
             fallback = f"Great, {templates.when(intent.proposal.fields['slot'])} works for {self.me.first_name()}."
         if intent.act == "decline":
@@ -172,7 +200,10 @@ class RequesterAgent:
                 "Use ONLY the facts listed; do not add numbers, names or promises. Say you are an AI agent in the first message.",
                 f"Intent: {intent.model_dump_json()}\nFacts you may state: {[c.statement for c in claims]}\n"
                 f"Common ground to lead with (real shared points, weave in naturally, invent nothing): {self.cg.get('points', [])}\n"
-                f"Do not share: {intent.withheld}\nProposal: {intent.proposal.model_dump_json() if intent.proposal else None}\n"
+                + (f"Objection to counter (quote them, don't dodge): \"{pitch.counter_to}\". "
+                   f"Strategy: {pitch.strategy}. Open with: \"{pitch.acknowledgment}\". "
+                   f"Shrink the ask with: \"{pitch.concession}\".\n" if pitch and intent.act == "answer" else "")
+                + f"Do not share: {intent.withheld}\nProposal: {intent.proposal.model_dump_json() if intent.proposal else None}\n"
                 f"Reference draft: {fallback}\nReturn {{\"candidates\": [\"text 1\", \"text 2\"]}}", max_tokens=600)
             if isinstance(out, dict):
                 candidates = [c for c in out.get("candidates", []) if isinstance(c, str)][:2]
@@ -193,7 +224,16 @@ class RequesterAgent:
             await analyze(self.role, incoming, self.emit)
         intent = self.plan(incoming)
         await self.think("Planner", intent.note, data=intent.model_dump())
+        if self.last_pitch and intent.act == "answer":
+            # Persuasion Games strategist step, surfaced for the UI/eval.
+            await self.emit("pitch", role=self.role,
+                            resistance=self.last_pitch.resistance_addressed,
+                            strategy=self.last_pitch.strategy,
+                            claim_keys=self.last_pitch.claim_keys,
+                            concession=self.last_pitch.concession,
+                            rationale=self.last_pitch.rationale)
         claims = [c for c in (self.claim_for(k) for k in intent.claim_ids) if c]
+        self.pstate.record_our_claims(intent.claim_ids, [c.evidence for c in claims if c.evidence])
         if intent.proposal and intent.proposal.fields.get("duration_min", 0) > self.mandate.get("max_meeting_min", 60):
             await self.think("Mandate", "Proposal exceeds the meeting length allowed; trimmed.")
         text = await self.generate(intent, claims)
