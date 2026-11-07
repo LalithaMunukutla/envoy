@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Envoy: your agent, their agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="16" r="8" class="mark-a"/><circle cx="21" cy="16" r="8" class="mark-b"/></svg>
+      <span class="wordmark">Envoy</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" aria-selected="true" data-view="negotiation">Negotiation</button>
+      <button role="tab" aria-selected="false" data-view="graphs">Knowledge graphs</button>
+    </nav>
+    <div class="run">
+      <label class="visually-hidden" for="scenario">Scenario</label>
+      <select id="scenario"></select>
+      <button id="run" class="primary">Start session</button>
+      <span id="mode" class="mode"></span>
+    </div>
+  </header>
+
+  <main>
+    <section id="view-negotiation" class="view">
+      <div class="sessionbar">
+        <ol class="route" id="route" aria-label="Session progress"></ol>
+        <p class="pack-line" id="pack-line">Pick a scenario and start a session to watch two agents negotiate.</p>
+      </div>
+
+      <div class="hall">
+        <aside class="desk desk-requester" id="desk-requester" aria-label="Requester agent">
+          <div class="desk-head">
+            <p class="desk-role">Requester's agent</p>
+            <h2 class="desk-name" data-slot="name">Waiting</h2>
+            <p class="desk-headline" data-slot="headline"></p>
+          </div>
+          <div class="panel">
+            <h3 data-slot="fit-label">Fit check</h3>
+            <div data-slot="fit"><p class="empty">Runs on public information before any message is sent.</p></div>
+          </div>
+          <div class="panel grow">
+            <h3>What the agent is doing</h3>
+            <ol class="log" data-slot="log"></ol>
+          </div>
+        </aside>
+
+        <section class="corridor" aria-label="Conversation between agents">
+          <div class="checkpoint-line" aria-hidden="true"></div>
+          <div id="letters" class="letters" aria-live="polite">
+            <div class="welcome">
+              <p class="welcome-title">Two agents, one checkpoint.</p>
+              <p>Each person's agent works from their own knowledge graph. Every message crosses the broker, which checks evidence, blocks manipulation and enforces the rules of the relationship. Nothing is booked until both people approve.</p>
+            </div>
+          </div>
+        </section>
+
+        <aside class="desk desk-receiver" id="desk-receiver" aria-label="Receiver agent">
+          <div class="desk-head">
+            <p class="desk-role">Receiver's agent</p>
+            <h2 class="desk-name" data-slot="name">Waiting</h2>
+            <p class="desk-headline" data-slot="headline"></p>
+          </div>
+          <div class="panel">
+            <h3>Interest, turn by turn</h3>
+            <div data-slot="spark"><p class="empty">Scored from 1 to 5 after each message.</p></div>
+          </div>
+          <div class="panel">
+            <h3 data-slot="fit-label">Fit against private priorities</h3>
+            <div data-slot="fit"><p class="empty">Builds up as facts are shared.</p></div>
+          </div>
+          <div class="panel grow">
+            <h3>What the agent is doing</h3>
+            <ol class="log" data-slot="log"></ol>
+          </div>
+        </aside>
+      </div>
+
+      <div class="approval" id="approval" hidden>
+        <div class="approval-copy">
+          <p class="approval-title" id="approval-title">The agents agreed on a time.</p>
+          <p class="approval-sub" id="approval-sub">Nothing is booked until both people approve.</p>
+        </div>
+        <div class="approvers" id="approvers"></div>
+      </div>
+    </section>
+
+    <section id="view-graphs" class="view" hidden>
+      <div class="graphs">
+        <aside class="people panel" aria-label="People">
+          <h3>People</h3>
+          <ul id="people-list"></ul>
+        </aside>
+        <div class="graph-stage">
+          <div class="graph-head">
+            <div>
+              <h2 id="graph-name" class="desk-name">Select a person</h2>
+              <p id="graph-headline" class="desk-headline"></p>
+            </div>
+            <ul class="legend" aria-label="Disclosure tiers">
+              <li><span class="dot tier-public"></span>Public</li>
+              <li><span class="dot tier-fit"></span>Shared when there is fit</li>
+              <li><span class="dot tier-approval"></span>Needs their approval</li>
+              <li><span class="dot tier-private"></span>Private</li>
+            </ul>
+          </div>
+          <svg id="graph" viewBox="0 0 900 640" role="img" aria-label="Personal knowledge graph"></svg>
+        </div>
+        <aside class="inspector">
+          <div class="panel">
+            <h3>Selected fact</h3>
+            <div id="node-detail"><p class="empty">Click a node to see its tier, source and evidence.</p></div>
+          </div>
+          <div class="panel">
+            <h3>Add facts from an interview</h3>
+            <label for="interview" class="visually-hidden">Interview transcript</label>
+            <textarea id="interview" rows="5" placeholder="Paste what the person said. For example: I work at Figma. I love bouldering. We're looking for a co-founder."></textarea>
+            <button id="ingest-interview">Extract facts</button>
+          </div>
+          <div class="panel">
+            <h3>Add public repos from GitHub</h3>
+            <label for="gh" class="visually-hidden">GitHub username</label>
+            <input id="gh" placeholder="GitHub username" autocomplete="off">
+            <button id="ingest-github">Import repos</button>
+            <p id="ingest-status" class="status" role="status"></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

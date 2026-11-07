@@ -1,0 +1,118 @@
+{
+  "id": "sam",
+  "name": "Sam Okafor",
+  "headline": "Partner, Harbor Growth",
+  "meta": {
+    "role": "investor",
+    "firm": "Harbor Growth"
+  },
+  "nodes": [
+    {
+      "id": "sam",
+      "type": "Person",
+      "label": "Sam Okafor",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "role": "Partner"
+      }
+    },
+    {
+      "id": "firm_harbor",
+      "type": "Work",
+      "label": "Harbor Growth",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "one_liner": "Growth fund for software companies."
+      }
+    },
+    {
+      "id": "prio_sam_pub",
+      "type": "Priority",
+      "label": "Public focus: fintech and developer tools in the US",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "sectors": [
+            "fintech",
+            "devtools"
+          ],
+          "geographies": [
+            "US"
+          ]
+        }
+      }
+    },
+    {
+      "id": "prio_sam_fit",
+      "type": "Priority",
+      "label": "Invests at Series B and C, $5M to $20M checks",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "stages": [
+            "series b",
+            "series c"
+          ],
+          "check_min": 5000000,
+          "check_max": 20000000
+        }
+      }
+    },
+    {
+      "id": "av_s1",
+      "type": "Availability",
+      "label": "Wed Nov 11, 14:00 to 15:00",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-11T14:00",
+        "end": "2026-11-11T15:00"
+      }
+    },
+    {
+      "id": "mandate_sam",
+      "type": "Mandate",
+      "label": "Gatekeeper mandate",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "shareable_tier": "public",
+        "max_meeting_min": 30
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "sam",
+      "target": "firm_harbor",
+      "type": "PARTNER_AT"
+    },
+    {
+      "source": "sam",
+      "target": "prio_sam_pub",
+      "type": "HAS"
+    },
+    {
+      "source": "sam",
+      "target": "prio_sam_fit",
+      "type": "HAS"
+    },
+    {
+      "source": "sam",
+      "target": "av_s1",
+      "type": "HAS"
+    },
+    {
+      "source": "sam",
+      "target": "mandate_sam",
+      "type": "HAS"
+    }
+  ]
+}

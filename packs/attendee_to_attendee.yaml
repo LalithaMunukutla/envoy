@@ -1,0 +1,25 @@
+# Scenario pack: symmetric, persuasion level 1 (propose with reasons, accept the first no).
+id: attendee_to_attendee
+title: Attendee to attendee
+symmetric: true
+persuasion_level: 1
+outcome: {type: session, label: Conversation}
+proposal_defaults: {duration_min: 20, place: "the coffee bar"}
+fit_threshold: 0.6
+min_coverage: 0.5
+turn_limit: 8
+issues:
+  - {name: place, label: Where, kind: choice, options: [the coffee bar, the lounge, a walk outside]}
+  - {name: duration_min, label: Length, kind: numeric, min: 15, max: 30, step: 5, unit: min}
+  - {name: slot, label: When, kind: slot}
+fit_criteria:
+  - {name: topics, label: Shared topics, kind: overlap, weight: 0.5, fact: topics, pref: topics, ask: "What are you working on today?"}
+  - {name: looking_for, label: Complementary needs, kind: overlap, weight: 0.3, fact: offers, pref: looking_for, ask: "What could you help with?"}
+  - {name: free_time, label: Free at the same time, kind: slot_overlap, weight: 0.2, fact: availability, pref: availability, min_minutes: 20}
+vetoes: []
+diligence: {}
+shareable_types: [Person, Work, Interest, Availability, Goal]
+tone: {register: friendly, warmth: high, max_words: 60}
+decline_style: soft_no_reason
+approval: both_humans
+pressure_terms: ["you have to", "last chance", "everyone else"]

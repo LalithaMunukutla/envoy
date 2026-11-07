@@ -1,0 +1,24 @@
+# Scenario pack: symmetric, persuasion level 0 (coordinate only; first no is final).
+id: friend_to_friend
+title: Friend to friend
+symmetric: true
+persuasion_level: 0
+outcome: {type: hangout, label: Hangout plan}
+proposal_defaults: {duration_min: 120}
+fit_threshold: 0.6
+min_coverage: 0.5
+turn_limit: 6
+issues:
+  - {name: activity, label: Activity, kind: choice, options: [climbing, hiking, dim sum, coffee, board games, live music]}
+  - {name: duration_min, label: Length, kind: numeric, min: 60, max: 240, step: 30, unit: min}
+  - {name: slot, label: When, kind: slot}
+fit_criteria:
+  - {name: free_time, label: Free time together, kind: slot_overlap, weight: 0.6, fact: availability, pref: availability, min_minutes: 90}
+  - {name: shared_activity, label: Something you both like, kind: overlap, weight: 0.4, fact: interests, pref: interests}
+vetoes: []
+diligence: {}
+shareable_types: [Person, Interest, Availability]
+tone: {register: casual, warmth: high, max_words: 45}
+decline_style: soft_no_reason
+approval: both_humans
+pressure_terms: ["you never", "come on", "you have to", "last time you", "you owe"]

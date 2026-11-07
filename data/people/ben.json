@@ -1,0 +1,108 @@
+{
+  "id": "ben",
+  "name": "Ben Adeyemi",
+  "headline": "Teacher, board game host",
+  "meta": {
+    "role": "friend"
+  },
+  "nodes": [
+    {
+      "id": "ben",
+      "type": "Person",
+      "label": "Ben Adeyemi",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_b1",
+      "type": "Interest",
+      "label": "Board games",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_b2",
+      "type": "Interest",
+      "label": "Climbing",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "av_b1",
+      "type": "Availability",
+      "label": "Tue Nov 10, 18:00 to 21:00",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-10T18:00",
+        "end": "2026-11-10T21:00"
+      }
+    },
+    {
+      "id": "av_b2",
+      "type": "Availability",
+      "label": "Thu Nov 12, 19:00 to 22:00",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-12T19:00",
+        "end": "2026-11-12T22:00"
+      }
+    },
+    {
+      "id": "mandate_ben",
+      "type": "Mandate",
+      "label": "Agent mandate for friends",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "friend_to_friend",
+        "shareable_tier": "public",
+        "max_meeting_min": 180,
+        "allowed_proposals": [
+          "hangout"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "ben",
+      "target": "asha",
+      "type": "KNOWS",
+      "closeness": 0.7,
+      "last_met": "2026-08-22",
+      "shared": [
+        "board games"
+      ]
+    },
+    {
+      "source": "ben",
+      "target": "int_b1",
+      "type": "HAS"
+    },
+    {
+      "source": "ben",
+      "target": "int_b2",
+      "type": "HAS"
+    },
+    {
+      "source": "ben",
+      "target": "av_b1",
+      "type": "HAS"
+    },
+    {
+      "source": "ben",
+      "target": "av_b2",
+      "type": "HAS"
+    },
+    {
+      "source": "ben",
+      "target": "mandate_ben",
+      "type": "HAS"
+    }
+  ]
+}

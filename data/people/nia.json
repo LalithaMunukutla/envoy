@@ -1,0 +1,105 @@
+{
+  "id": "nia",
+  "name": "Nia Okoro",
+  "headline": "Product designer exploring agent UX",
+  "meta": {
+    "role": "attendee"
+  },
+  "nodes": [
+    {
+      "id": "nia",
+      "type": "Person",
+      "label": "Nia Okoro",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "role": "Product designer"
+      }
+    },
+    {
+      "id": "work_nia",
+      "type": "Work",
+      "label": "Designing interfaces for AI agents",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "facts": {
+          "topics": [
+            "agents",
+            "design"
+          ],
+          "offers": [
+            "product design"
+          ]
+        }
+      }
+    },
+    {
+      "id": "prio_nia",
+      "type": "Priority",
+      "label": "Wants to meet ML engineers working on agents",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "pack": "attendee_to_attendee",
+        "prefs": {
+          "topics": [
+            "agents",
+            "design"
+          ],
+          "looking_for": [
+            "ml engineering"
+          ]
+        }
+      }
+    },
+    {
+      "id": "av_n1",
+      "type": "Availability",
+      "label": "Today, 16:00 to 16:45",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-07T16:00",
+        "end": "2026-11-07T16:45"
+      }
+    },
+    {
+      "id": "mandate_nia",
+      "type": "Mandate",
+      "label": "Agent mandate at events",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "attendee_to_attendee",
+        "shareable_tier": "public",
+        "max_meeting_min": 30,
+        "allowed_proposals": [
+          "session"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "nia",
+      "target": "work_nia",
+      "type": "HAS"
+    },
+    {
+      "source": "nia",
+      "target": "prio_nia",
+      "type": "HAS"
+    },
+    {
+      "source": "nia",
+      "target": "av_n1",
+      "type": "HAS"
+    },
+    {
+      "source": "nia",
+      "target": "mandate_nia",
+      "type": "HAS"
+    }
+  ]
+}

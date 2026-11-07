@@ -1,0 +1,105 @@
+{
+  "id": "priya",
+  "name": "Priya Natarajan",
+  "headline": "Data scientist, climbs on weekends",
+  "meta": {
+    "role": "friend"
+  },
+  "nodes": [
+    {
+      "id": "priya",
+      "type": "Person",
+      "label": "Priya Natarajan",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_p1",
+      "type": "Interest",
+      "label": "Climbing",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_p2",
+      "type": "Interest",
+      "label": "Coffee",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_p3",
+      "type": "Interest",
+      "label": "Hiking",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "av_p1",
+      "type": "Availability",
+      "label": "Sat Nov 14, 13:00 to 17:00",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-14T13:00",
+        "end": "2026-11-14T17:00"
+      }
+    },
+    {
+      "id": "mandate_priya",
+      "type": "Mandate",
+      "label": "Agent mandate for friends",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "friend_to_friend",
+        "shareable_tier": "public",
+        "max_meeting_min": 180,
+        "allowed_proposals": [
+          "hangout"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "priya",
+      "target": "asha",
+      "type": "KNOWS",
+      "closeness": 0.9,
+      "last_met": "2026-10-03",
+      "shared": [
+        "climbing"
+      ]
+    },
+    {
+      "source": "priya",
+      "target": "int_p1",
+      "type": "HAS"
+    },
+    {
+      "source": "priya",
+      "target": "int_p2",
+      "type": "HAS"
+    },
+    {
+      "source": "priya",
+      "target": "int_p3",
+      "type": "HAS"
+    },
+    {
+      "source": "priya",
+      "target": "av_p1",
+      "type": "HAS"
+    },
+    {
+      "source": "priya",
+      "target": "mandate_priya",
+      "type": "HAS"
+    }
+  ]
+}

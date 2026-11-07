@@ -1,0 +1,104 @@
+{
+  "id": "rex",
+  "name": "Rex Calloway",
+  "headline": "Founder, Quickflip AI",
+  "meta": {
+    "role": "founder",
+    "company": "Quickflip AI",
+    "adversarial": true
+  },
+  "nodes": [
+    {
+      "id": "rex",
+      "type": "Person",
+      "label": "Rex Calloway",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "role": "Founder"
+      }
+    },
+    {
+      "id": "co_quickflip",
+      "type": "Work",
+      "label": "Quickflip AI",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "one_liner": "Quickflip AI resells GPU time to startups.",
+        "facts": {
+          "stage": "seed",
+          "sectors": [
+            "ai infrastructure"
+          ],
+          "geography": "US"
+        },
+        "statements": {
+          "stage": "Quickflip AI is raising a seed round",
+          "sectors": "Quickflip AI is an AI infrastructure company",
+          "geography": "Quickflip AI is based in Austin"
+        }
+      }
+    },
+    {
+      "id": "goal_rex",
+      "type": "Goal",
+      "label": "Raising a seed round",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "facts": {
+          "check_ask": 400000
+        },
+        "statements": {
+          "check_ask": "Rex is looking for a $400,000 check"
+        }
+      }
+    },
+    {
+      "id": "av_r1",
+      "type": "Availability",
+      "label": "Wed Nov 11, 15:00 to 16:00",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-11T15:00",
+        "end": "2026-11-11T16:00"
+      }
+    },
+    {
+      "id": "mandate_rex",
+      "type": "Mandate",
+      "label": "Agent mandate",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "*",
+        "shareable_tier": "fit",
+        "max_meeting_min": 60
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "rex",
+      "target": "co_quickflip",
+      "type": "FOUNDED"
+    },
+    {
+      "source": "rex",
+      "target": "goal_rex",
+      "type": "HAS"
+    },
+    {
+      "source": "rex",
+      "target": "av_r1",
+      "type": "HAS"
+    },
+    {
+      "source": "rex",
+      "target": "mandate_rex",
+      "type": "HAS"
+    }
+  ]
+}

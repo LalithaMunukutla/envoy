@@ -1,0 +1,30 @@
+# Scenario pack: asymmetric, persuasion level 2 (make the case, answer objections, never pressure).
+id: founder_to_investor
+title: Founder to investor
+symmetric: false
+persuasion_level: 2
+outcome: {type: meeting, label: Pitch call}
+proposal_defaults: {duration_min: 30, format: video}
+fit_threshold: 0.7
+min_coverage: 0.75
+turn_limit: 12
+issues:
+  - {name: duration_min, label: Length, kind: numeric, min: 15, max: 45, step: 5, unit: min}
+  - {name: format, label: Format, kind: choice, options: [in_person, video, async_qa]}
+  - {name: agenda, label: Agenda, kind: choice, options: [intro_call, product_demo, deep_dive]}
+  - {name: slot, label: When, kind: slot}
+fit_criteria:
+  - {name: stage, label: Stage, kind: member, weight: 0.3, fact: stage, pref: stages, ask: "What stage is the company at?"}
+  - {name: sector, label: Sector, kind: overlap, weight: 0.3, fact: sectors, pref: sectors, ask: "Which market are you building for?"}
+  - {name: check_size, label: Check size, kind: in_range, weight: 0.2, fact: check_ask, pref_min: check_min, pref_max: check_max, ask: "What check size are you looking for from us?"}
+  - {name: geography, label: Geography, kind: member, weight: 0.2, fact: geography, pref: geographies, ask: "Where is the company based?"}
+vetoes:
+  - {name: anti_thesis, label: Outside thesis, kind: overlap, fact: sectors, pref: anti}
+diligence:
+  traction: "What traction do you have so far?"
+  team: "Why is this team the one to build it?"
+shareable_types: [Person, Work, Goal, Traction, Achievement]
+tone: {register: professional, warmth: high, max_words: 90}
+decline_style: polite_with_reason
+approval: both_humans
+pressure_terms: ["last chance", "act now", "other investors are", "closing tomorrow", "don't miss", "before it's too late"]

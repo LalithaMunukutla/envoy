@@ -1,0 +1,106 @@
+{
+  "id": "leo",
+  "name": "Leo Park",
+  "headline": "ML engineer building an agent eval tool",
+  "meta": {
+    "role": "attendee"
+  },
+  "nodes": [
+    {
+      "id": "leo",
+      "type": "Person",
+      "label": "Leo Park",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "role": "ML engineer"
+      }
+    },
+    {
+      "id": "work_leo",
+      "type": "Work",
+      "label": "Building an open-source agent eval tool",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "one_liner": "Leo is building an open-source tool that replays agent runs to find regressions.",
+        "facts": {
+          "topics": [
+            "agents",
+            "evals"
+          ],
+          "offers": [
+            "ml engineering",
+            "eval design"
+          ]
+        },
+        "statements": {
+          "topics": "Leo works on AI agents and evaluation",
+          "offers": "Leo can help with ML engineering and eval design"
+        }
+      }
+    },
+    {
+      "id": "goal_leo",
+      "type": "Goal",
+      "label": "Looking for a product designer to team up with",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "facts": {
+          "looking_for": [
+            "product design"
+          ]
+        }
+      }
+    },
+    {
+      "id": "av_l1",
+      "type": "Availability",
+      "label": "Today, 15:00 to 17:00",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-07T15:00",
+        "end": "2026-11-07T17:00"
+      }
+    },
+    {
+      "id": "mandate_leo",
+      "type": "Mandate",
+      "label": "Agent mandate at events",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "attendee_to_attendee",
+        "shareable_tier": "public",
+        "max_meeting_min": 30,
+        "allowed_proposals": [
+          "session"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "leo",
+      "target": "work_leo",
+      "type": "HAS"
+    },
+    {
+      "source": "leo",
+      "target": "goal_leo",
+      "type": "HAS"
+    },
+    {
+      "source": "leo",
+      "target": "av_l1",
+      "type": "HAS"
+    },
+    {
+      "source": "leo",
+      "target": "mandate_leo",
+      "type": "HAS"
+    }
+  ]
+}

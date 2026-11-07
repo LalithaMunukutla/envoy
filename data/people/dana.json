@@ -1,0 +1,178 @@
+{
+  "id": "dana",
+  "name": "Dana Ruiz",
+  "headline": "Partner, Northbeam Ventures",
+  "meta": {
+    "role": "investor",
+    "firm": "Northbeam Ventures"
+  },
+  "nodes": [
+    {
+      "id": "dana",
+      "type": "Person",
+      "label": "Dana Ruiz",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "role": "Partner"
+      }
+    },
+    {
+      "id": "firm_northbeam",
+      "type": "Work",
+      "label": "Northbeam Ventures",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "one_liner": "Seed fund backing developer tools and AI infrastructure."
+      }
+    },
+    {
+      "id": "prio_dana",
+      "type": "Priority",
+      "label": "Thesis: pre-seed and seed devtools, AI infrastructure, data",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "stages": [
+            "pre-seed",
+            "seed"
+          ],
+          "sectors": [
+            "devtools",
+            "ai infrastructure",
+            "data"
+          ],
+          "check_min": 250000,
+          "check_max": 1000000,
+          "geographies": [
+            "US",
+            "Canada"
+          ]
+        }
+      }
+    },
+    {
+      "id": "limit_dana",
+      "type": "Limit",
+      "label": "Does not invest in hardware or crypto",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "anti": [
+            "hardware",
+            "crypto"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cap_dana",
+      "type": "Priority",
+      "label": "Two intro calls a week",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "prefs": {
+          "weekly_calls": 2
+        }
+      }
+    },
+    {
+      "id": "av_d1",
+      "type": "Availability",
+      "label": "Wed Nov 11, 15:00 to 16:30",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-11T15:00",
+        "end": "2026-11-11T16:30"
+      }
+    },
+    {
+      "id": "av_d2",
+      "type": "Availability",
+      "label": "Thu Nov 12, 09:00 to 10:00",
+      "tier": "fit",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-12T09:00",
+        "end": "2026-11-12T10:00"
+      }
+    },
+    {
+      "id": "mandate_dana",
+      "type": "Mandate",
+      "label": "Gatekeeper mandate",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "founder_to_investor",
+        "shareable_tier": "public",
+        "max_meeting_min": 30,
+        "allowed_proposals": [
+          "meeting",
+          "call"
+        ]
+      }
+    },
+    {
+      "id": "ev_nb_site",
+      "type": "Evidence",
+      "label": "Northbeam website",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "kind": "url",
+        "ref": "https://example.com/northbeam"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "dana",
+      "target": "firm_northbeam",
+      "type": "PARTNER_AT"
+    },
+    {
+      "source": "prio_dana",
+      "target": "ev_nb_site",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "dana",
+      "target": "prio_dana",
+      "type": "HAS"
+    },
+    {
+      "source": "dana",
+      "target": "limit_dana",
+      "type": "HAS"
+    },
+    {
+      "source": "dana",
+      "target": "cap_dana",
+      "type": "HAS"
+    },
+    {
+      "source": "dana",
+      "target": "av_d1",
+      "type": "HAS"
+    },
+    {
+      "source": "dana",
+      "target": "av_d2",
+      "type": "HAS"
+    },
+    {
+      "source": "dana",
+      "target": "mandate_dana",
+      "type": "HAS"
+    }
+  ]
+}

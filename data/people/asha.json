@@ -1,0 +1,117 @@
+{
+  "id": "asha",
+  "name": "Asha Rao",
+  "headline": "Product designer, lives in the Mission",
+  "meta": {
+    "role": "friend"
+  },
+  "nodes": [
+    {
+      "id": "asha",
+      "type": "Person",
+      "label": "Asha Rao",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "neighborhood": "Mission, San Francisco"
+      }
+    },
+    {
+      "id": "int_a1",
+      "type": "Interest",
+      "label": "Climbing",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_a2",
+      "type": "Interest",
+      "label": "Dim sum",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "int_a3",
+      "type": "Interest",
+      "label": "Live music",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {}
+    },
+    {
+      "id": "av_a1",
+      "type": "Availability",
+      "label": "Sat Nov 14, 14:00 to 18:00",
+      "tier": "public",
+      "source": "seed",
+      "attrs": {
+        "start": "2026-11-14T14:00",
+        "end": "2026-11-14T18:00"
+      }
+    },
+    {
+      "id": "mandate_asha",
+      "type": "Mandate",
+      "label": "Agent mandate for friends",
+      "tier": "private",
+      "source": "seed",
+      "attrs": {
+        "pack": "friend_to_friend",
+        "shareable_tier": "public",
+        "max_meeting_min": 180,
+        "allowed_proposals": [
+          "hangout"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "asha",
+      "target": "priya",
+      "type": "KNOWS",
+      "closeness": 0.9,
+      "last_met": "2026-10-03",
+      "shared": [
+        "climbing"
+      ]
+    },
+    {
+      "source": "asha",
+      "target": "ben",
+      "type": "KNOWS",
+      "closeness": 0.7,
+      "last_met": "2026-08-22",
+      "shared": [
+        "board games"
+      ]
+    },
+    {
+      "source": "asha",
+      "target": "int_a1",
+      "type": "HAS"
+    },
+    {
+      "source": "asha",
+      "target": "int_a2",
+      "type": "HAS"
+    },
+    {
+      "source": "asha",
+      "target": "int_a3",
+      "type": "HAS"
+    },
+    {
+      "source": "asha",
+      "target": "av_a1",
+      "type": "HAS"
+    },
+    {
+      "source": "asha",
+      "target": "mandate_asha",
+      "type": "HAS"
+    }
+  ]
+}

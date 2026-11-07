@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import fastapi, networkx, yaml, pydantic, httpx, dotenv; print\\('deps OK'\\)\")",
+      "Bash(python3 -m venv .venv)",
+      "Bash(./.venv/bin/python -m pip install --upgrade pip -q)",
+      "Bash(./.venv/bin/pip install *)",
+      "Bash(./.venv/bin/python -c \"import fastapi, networkx, yaml, pydantic, httpx, dotenv, anthropic, pytest; print\\('all imports OK'\\)\")",
+      "Bash(./.venv/bin/python scripts/seed_people.py)",
+      "Bash(./.venv/bin/python scripts/run_eval.py)",
+      "Bash(echo \"=== EXIT $? ===\")",
+      "Bash(./.venv/bin/python -m pytest -q)",
+      "Bash(./.venv/bin/uvicorn server.main:app --host 127.0.0.1 --port 8000 > /tmp/envoy_server.log 2>&1)",
+      "WebSearch",
+      "Bash(curl -s -m 20 https://bjp.elxisbike.site/v1/models -H \"Authorization: Bearer sk-QhWHP0EoQzHQ9bdta1SGeA\")",
+      "Bash(curl -s -m 40 https://bjp.elxisbike.site/v1/chat/completions -H 'Authorization: Bearer sk-QhWHP0EoQzHQ9bdta1SGeA' -H 'Content-Type: application/json' -d '{\"model\":\"gemini/gemini-3.8-flash\",\"max_tokens\":200,\"messages\":[{\"role\":\"system\",\"content\":\"Respond with JSON only.\"},{\"role\":\"user\",\"content\":\"Return {\\\\\"ok\\\\\": true, \\\\\"candidates\\\\\": [\\\\\"hello\\\\\"]}\"}]}')",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"wrote .env \\($\\(wc -l < .env\\) lines\\); git-ignored: $\\(git check-ignore .env 2>/dev/null || echo 'not a git repo, but listed in .gitignore'\\)\")",
+      "Bash(xargs kill -9)",
+      "Bash(echo \"EXIT $?\")",
+      "Bash(curl -s http://127.0.0.1:8000/api/health)",
+      "Bash(curl -s http://127.0.0.1:8000/api/sessions/027ae230/invite.ics)"
+    ]
+  }
+}
