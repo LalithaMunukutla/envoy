@@ -3,7 +3,11 @@
   "name": "Priya Natarajan",
   "headline": "Data scientist, climbs on weekends",
   "meta": {
-    "role": "friend"
+    "demo": true,
+    "role": "friend",
+    "intents": [
+      "friends"
+    ]
   },
   "nodes": [
     {

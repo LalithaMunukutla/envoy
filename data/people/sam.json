@@ -3,8 +3,12 @@
   "name": "Sam Okafor",
   "headline": "Partner, Harbor Growth",
   "meta": {
+    "demo": true,
     "role": "investor",
-    "firm": "Harbor Growth"
+    "firm": "Harbor Growth",
+    "intents": [
+      "investing"
+    ]
   },
   "nodes": [
     {

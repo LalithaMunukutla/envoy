@@ -3,7 +3,11 @@
   "name": "Nia Okoro",
   "headline": "Product designer exploring agent UX",
   "meta": {
-    "role": "attendee"
+    "demo": true,
+    "role": "attendee",
+    "intents": [
+      "networking"
+    ]
   },
   "nodes": [
     {

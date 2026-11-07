@@ -1,0 +1,19 @@
+{
+  "id": "lalitha",
+  "name": "Lalitha",
+  "headline": "",
+  "meta": {
+    "created": true
+  },
+  "nodes": [
+    {
+      "tier": "public",
+      "attrs": {},
+      "source": "self",
+      "id": "lalitha",
+      "type": "Person",
+      "label": "Lalitha"
+    }
+  ],
+  "edges": []
+}

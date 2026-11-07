@@ -3,7 +3,11 @@
   "name": "Leo Park",
   "headline": "ML engineer building an agent eval tool",
   "meta": {
-    "role": "attendee"
+    "demo": true,
+    "role": "attendee",
+    "intents": [
+      "networking"
+    ]
   },
   "nodes": [
     {

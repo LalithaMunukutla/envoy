@@ -1,0 +1,854 @@
+{
+  "id": "ali",
+  "name": "Ali",
+  "headline": "",
+  "meta": {
+    "created": true,
+    "connectors": {
+      "linkedin": {
+        "at": 1794088819.422288,
+        "added": 0,
+        "imports": 47,
+        "ref": "Whatsapp Phone Numbers.csv"
+      }
+    },
+    "ingest_log": [
+      {
+        "source": "linkedin",
+        "at": 1794088819.373329,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.373767,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.373904,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.375788,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.376182,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.3820548,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.382195,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.3824158,
+        "new": 1,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.382615,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.382732,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.3829079,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383017,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383123,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383229,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383331,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383435,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.383544,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.3857238,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.3858402,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.385956,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.386063,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.386178,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.387152,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.387299,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.387449,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.388036,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.406394,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4066381,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.406811,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4069738,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.407216,
+        "new": 4,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4075148,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.407922,
+        "new": 1,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4089642,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.409193,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4094121,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4096,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.40984,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.410112,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4102972,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.411278,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.411474,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4211872,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.4214551,
+        "new": 1,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.421757,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.422039,
+        "new": 0,
+        "updated": 0
+      },
+      {
+        "source": "linkedin",
+        "at": 1794088819.422288,
+        "new": 0,
+        "updated": 0
+      }
+    ],
+    "intents": [
+      "friends",
+      "raising"
+    ]
+  },
+  "nodes": [
+    {
+      "tier": "public",
+      "attrs": {},
+      "source": "self",
+      "id": "ali",
+      "type": "Person",
+      "label": "Ali"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "span": "2012 \u2013 2016",
+        "statements": {
+          "education": "Studied Software Engineering PUCIT"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.3824158
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "achievement_software_engineering_pucit",
+      "type": "Achievement",
+      "label": "Software Engineering, PUCIT"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_achievement_software_engineering_pucit_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "company": "heyeve",
+        "title": "Co-Founder & CEO",
+        "span": "Nov 2024",
+        "description": "- Leading the development of immersive tech and VR simulations that revolutionize legal education and courtroom training. - On a mission to empower law students and professionals with experiential, voice-guided learning environments that build real-world advocacy skills. - Focus on strategic growth, innovation, and building a talented team to deliver cutting-edge solutions - Passionate about trans",
+        "statements": {
+          "role": "Co-Founder & CEO at heyeve (Nov 2024)"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.407216
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "work_co_founder_ceo_at_heyeve",
+      "type": "Work",
+      "label": "Co-Founder & CEO at heyeve"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_work_co_founder_ceo_at_heyeve_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "company": "Euphoria XR",
+        "title": "CEO",
+        "span": "Jun 2016",
+        "description": "- Leading a tech marketing startup that designs creative and innovative brand campaigns. - Pioneers of VR campaigns in Pakistan, working with international clients and multinational brands. - Specializing in augmented reality (AR) and virtual reality (VR) technology to create engaging experiences. - Launching a no-code platform to empower brands to innovate without coding skills. \ud83d\ude80",
+        "statements": {
+          "role": "CEO at Euphoria XR (Jun 2016)"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.407216
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "work_ceo_at_euphoria_xr",
+      "type": "Work",
+      "label": "CEO at Euphoria XR"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_work_ceo_at_euphoria_xr_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "company": "The Upper Room Pakistan",
+        "title": "Member Board of Directors",
+        "span": "Oct 2024",
+        "description": "My Role as Board Director  As a Board Director, I work closely with the founding team to shape The Upper Room\u2019s strategic direction, scale its impact, and strengthen its partnerships across universities, churches, and industry networks. My role bridges faith, innovation, and entrepreneurship, helping to design programs that nurture both business capability and spiritual leadership among young Chri",
+        "statements": {
+          "role": "Member Board of Directors at The Upper Room Pakistan (Oct 2024)"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.407216
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "work_member_board_of_directors_at_the_upper_r",
+      "type": "Work",
+      "label": "Member Board of Directors at The Upper Room Pakistan"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_work_member_board_of_directors_at_the_upper_r_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "company": "InterApp",
+        "title": "Technical Director",
+        "span": "May 2017 \u2013 Jul 2023",
+        "description": "Co-founded InterApp, an AR startup that transformed static print designs into interactive, AR-powered experiences in real time, enabling creators to bring their work to life with zero coding required. Raised $1.2M in pre-seed funding to scale marketing and capture market share in the AR/NFT space. Led product and growth alongside co-founders Ahmed Malik, Jameel Qureshi, and William Class, operatin",
+        "statements": {
+          "role": "Technical Director at InterApp (May 2017 \u2013 Jul 2023)"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.407216
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "work_technical_director_at_interapp",
+      "type": "Work",
+      "label": "Technical Director at InterApp"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_work_technical_director_at_interapp_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "one_liner": "\ud83c\udf1f CEO of heyeve, where VR is reshaping how future legal minds train, think, and advocate! At heyeve, we're building voice-activated, immersive courtroom simulations that transform traditional legal education into interactive, experiential learning. From mock trials to judicial interview prep, we're empowering law students and professionals to practice like pros before they ever enter a real courtroom. As the CEO of Euphoria XR, I'm on a mission to revolutionize the digital realm! We're building a next-gen AR/VR studio that takes immersive experiences to a whole new level. But that's not all; I am empowering dreamers and doers to create without limits! \ud83d\udca1With a knack for R&amp;D and B2B strategies, I live for the thrill of innovation and the magic of connections. Let's join forces and explore the boundless possibilities of legal tech, AR/VR, and solutions. The future is ours to create!",
+        "facts": {
+          "geography": "Lahore, Punjab, Pakistan",
+          "industry": "Software Development"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.407922
+          }
+        }
+      },
+      "source": "linkedin",
+      "id": "work_ceo_driving_the_future_of_legaltech_star",
+      "type": "Work",
+      "label": "CEO Driving the Future of LegalTech | Startups | Automated Workflows | Virtual Reality | Immersive Tech"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_work_ceo_driving_the_future_of_legaltech_star_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "tier": "public",
+      "attrs": {
+        "facts": {
+          "topics": [
+            "leadership",
+            "communication",
+            "train",
+            "teaching",
+            "business analysis",
+            "process improvement",
+            "technical direction",
+            "augmented reality",
+            "business development",
+            "app store optimization",
+            "marketing",
+            "entrepreneurship",
+            "team management",
+            "software development",
+            "software engineering",
+            "virtual reality",
+            "mixed reality",
+            "xr",
+            "html",
+            "management",
+            "microsoft hololens",
+            "unity",
+            "vuforia augmented reality sdk",
+            "business relationship management",
+            "start-ups"
+          ],
+          "skills": [
+            "Leadership",
+            "Communication",
+            "Train",
+            "Teaching",
+            "Business Analysis",
+            "Process Improvement",
+            "Technical Direction",
+            "Augmented Reality",
+            "Business Development",
+            "App Store Optimization",
+            "Marketing",
+            "Entrepreneurship",
+            "Team Management",
+            "Software Development",
+            "Software Engineering",
+            "Virtual Reality",
+            "Mixed Reality",
+            "XR",
+            "HTML",
+            "Management",
+            "Microsoft HoloLens",
+            "Unity",
+            "Vuforia Augmented Reality SDK",
+            "Business Relationship Management",
+            "Start-ups"
+          ]
+        },
+        "statements": {
+          "topics": "Skilled in Leadership, Communication, Train, Teaching, Business Analysis, Process Improvement, Technical Direction, Augmented Reality"
+        },
+        "provenance": {
+          "linkedin": {
+            "count": 1,
+            "last_seen": 1794088819.4214551
+          }
+        },
+        "weight": 1.0,
+        "last_seen": 1794088819.4214551
+      },
+      "source": "linkedin",
+      "id": "interest_skills",
+      "type": "Interest",
+      "label": "Skills"
+    },
+    {
+      "type": "Evidence",
+      "tier": "public",
+      "attrs": {
+        "kind": "profile",
+        "ref": "LinkedIn export"
+      },
+      "source": "linkedin",
+      "id": "ev_interest_skills_linkedin",
+      "label": "LinkedIn export"
+    },
+    {
+      "id": "goal_ali_raise",
+      "type": "Goal",
+      "label": "Raising a $250k pre-seed for immersive + legaltech",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "stage": "seed",
+          "sectors": [
+            "immersive tech",
+            "augmented reality",
+            "legaltech"
+          ],
+          "geography": "Pakistan",
+          "check_ask": 250000
+        },
+        "statements": {
+          "stage": "Ali's startup is raising a pre-seed round",
+          "sectors": "Ali builds immersive tech (AR/VR) and legaltech",
+          "geography": "Ali's startup is based in Pakistan",
+          "check_ask": "Ali is raising a $250,000 pre-seed round"
+        }
+      }
+    },
+    {
+      "id": "ev_goal_ali_raise",
+      "type": "Evidence",
+      "label": "Pre-seed one-pager",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "kind": "doc",
+        "ref": "https://example.com/ali/one-pager"
+      }
+    },
+    {
+      "id": "tr_ali_pilots",
+      "type": "Traction",
+      "label": "3 enterprise AR pilots",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "traction": "3 enterprise AR pilots"
+        },
+        "statements": {
+          "traction": "Ali's team is running 3 enterprise AR pilots"
+        }
+      }
+    },
+    {
+      "id": "int_ali_hiking",
+      "type": "Interest",
+      "label": "Hiking",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "interests": [
+            "hiking"
+          ]
+        }
+      }
+    },
+    {
+      "id": "int_ali_coffee",
+      "type": "Interest",
+      "label": "Coffee",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "interests": [
+            "coffee"
+          ]
+        }
+      }
+    },
+    {
+      "id": "av_ali_wed",
+      "type": "Availability",
+      "label": "Wed Nov 11, 15:00 to 17:00",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "start": "2026-11-11T15:00",
+        "end": "2026-11-11T17:00"
+      }
+    },
+    {
+      "id": "av_ali_sat",
+      "type": "Availability",
+      "label": "Sat Nov 14, 14:00 to 18:00",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "start": "2026-11-14T14:00",
+        "end": "2026-11-14T18:00"
+      }
+    },
+    {
+      "id": "ev_tr_ali_pilots",
+      "type": "Evidence",
+      "label": "Pilot agreements (redacted)",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "kind": "doc",
+        "ref": "https://example.com/ali/pilots"
+      }
+    },
+    {
+      "id": "ach_ali_team",
+      "type": "Achievement",
+      "label": "Two-time XR founder; ex-Technical Director",
+      "tier": "fit",
+      "source": "demo",
+      "attrs": {
+        "facts": {
+          "team": "two-time XR founder and ex-Technical Director"
+        },
+        "statements": {
+          "team": "Ali is a two-time XR founder and former Technical Director who has shipped AR products on HoloLens and Unity"
+        }
+      }
+    },
+    {
+      "id": "ev_ach_ali_team",
+      "type": "Evidence",
+      "label": "LinkedIn profile",
+      "tier": "public",
+      "source": "demo",
+      "attrs": {
+        "kind": "profile",
+        "ref": "https://linkedin.com/in/ali"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "ali",
+      "target": "achievement_software_engineering_pucit",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "work_co_founder_ceo_at_heyeve",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "work_ceo_at_euphoria_xr",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "work_member_board_of_directors_at_the_upper_r",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "work_technical_director_at_interapp",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "work_ceo_driving_the_future_of_legaltech_star",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "interest_skills",
+      "type": "HAS"
+    },
+    {
+      "source": "achievement_software_engineering_pucit",
+      "target": "ev_achievement_software_engineering_pucit_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "work_co_founder_ceo_at_heyeve",
+      "target": "ev_work_co_founder_ceo_at_heyeve_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "work_ceo_at_euphoria_xr",
+      "target": "ev_work_ceo_at_euphoria_xr_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "work_member_board_of_directors_at_the_upper_r",
+      "target": "ev_work_member_board_of_directors_at_the_upper_r_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "work_technical_director_at_interapp",
+      "target": "ev_work_technical_director_at_interapp_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "work_ceo_driving_the_future_of_legaltech_star",
+      "target": "ev_work_ceo_driving_the_future_of_legaltech_star_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "interest_skills",
+      "target": "ev_interest_skills_linkedin",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "goal_ali_raise",
+      "target": "ev_goal_ali_raise",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "ali",
+      "target": "goal_ali_raise",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "tr_ali_pilots",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "int_ali_hiking",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "int_ali_coffee",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "av_ali_wed",
+      "type": "HAS"
+    },
+    {
+      "source": "ali",
+      "target": "av_ali_sat",
+      "type": "HAS"
+    },
+    {
+      "source": "tr_ali_pilots",
+      "target": "ev_tr_ali_pilots",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "ach_ali_team",
+      "target": "ev_ach_ali_team",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "source": "ali",
+      "target": "ach_ali_team",
+      "type": "HAS"
+    }
+  ]
+}
