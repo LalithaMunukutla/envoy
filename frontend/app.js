@@ -54,8 +54,9 @@ async function boot() {
 }
 
 function populateSeeking(intents) {
+  // Label sits above the select, so options carry just the intent name.
   $("#seeking").replaceChildren(...intents.map((it) =>
-    h("option", { value: it.id }, `Looking for: ${it.label.replace(/^.*?: /, "")}`)));
+    h("option", { value: it.id }, it.label.replace(/^.*?: /, ""))));
 }
 
 function populateMe(people) {
@@ -225,6 +226,10 @@ function letter(msg, flags) {
   const role = msg.sender.role;
   const evidence = Object.fromEntries((msg.evidence || []).map((e) => [e.id, e]));
   const blocked = flags && flags.length;
+  // Stamps live INSIDE the letter as a quiet footer, not floating in the corridor.
+  const stamps = h("footer", { class: "stamps", "data-turn": msg.turn });
+  if (blocked) flags.forEach((f) => stamps.append(h("span", { class: "stamp bad" }, `Blocked: ${f}`)));
+  else stamps.append(h("span", { class: "stamp" }, "Firewall clear"));
   const el = h("article", { class: `letter from-${role} arrive${blocked ? " blocked" : ""}`, "data-turn": msg.turn },
     h("header", {},
       h("span", { class: "who" }, `${firstName(msg.sender.acting_for)}'s agent`),
@@ -236,12 +241,9 @@ function letter(msg, flags) {
         const ev = c.evidence && evidence[c.evidence];
         return h("li", { class: `claim${ev ? " verified" : ""}`, title: ev ? `Evidence: ${ev.summary} (${ev.ref})` : "No evidence attached" }, c.statement);
       })) : null,
-    msg.proposal ? renderProposal(msg.proposal) : null);
+    msg.proposal ? renderProposal(msg.proposal) : null,
+    stamps);
   $("#letters").append(el);
-  const stamps = h("div", { class: "stamps", "data-turn": msg.turn });
-  if (blocked) flags.forEach((f) => stamps.append(h("span", { class: "stamp bad" }, `Blocked: ${f}`)));
-  else stamps.append(h("span", { class: "stamp" }, "Firewall clear"));
-  $("#letters").append(stamps);
   el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
 }
 
@@ -479,45 +481,117 @@ function drawGraph(g) {
   const ns = "http://www.w3.org/2000/svg";
   const svg = $("#graph");
   svg.replaceChildren();
-  const W = 900, H = 640, cx = W / 2, cy = H / 2;
+  // Bigger canvas gives labels room to breathe; aspect scales to fit the stage.
+  const W = 1000, H = 760, cx = W / 2, cy = H / 2;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   const byId = Object.fromEntries(g.nodes.map((n) => [n.id, n]));
   const pos = {};
   pos[g.id] = { x: cx, y: cy, a: 0 };
+
+  // Sort facts by type so same-kind nodes cluster together on the ring.
   const facts = g.nodes.filter((n) => n.id !== g.id && n.type !== "Evidence");
   const order = ["Work", "Goal", "Traction", "Achievement", "Priority", "Limit", "Interest", "Availability", "Mandate", "Contact", "Preference", "Style"];
   facts.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+
+  // Facts on a single ring. Alternate radius slightly (zigzag) so neighboring
+  // labels never share a horizontal line -- cheap collision avoidance.
+  const R_fact = 265;
   facts.forEach((n, i) => {
     const a = -Math.PI / 2 + (i / Math.max(facts.length, 1)) * Math.PI * 2;
-    pos[n.id] = { x: cx + Math.cos(a) * 200, y: cy + Math.sin(a) * 175, a };
+    const zig = i % 2 === 0 ? 0 : 36;
+    const r = R_fact + zig;
+    pos[n.id] = { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, a };
   });
+
+  // Evidence orbits its parent fact (local "moons"), not a shared outer ring.
+  const children = {};
+  g.edges.filter((e) => e.type === "SUPPORTED_BY" && pos[e.source])
+    .forEach((e) => { (children[e.source] = children[e.source] || []).push(e.target); });
   const evidence = g.nodes.filter((n) => n.type === "Evidence");
-  const used = {};
-  evidence.forEach((n, i) => {
-    const src = g.edges.find((e) => e.type === "SUPPORTED_BY" && e.target === n.id && pos[e.source]);
-    let a = src ? pos[src.source].a : -Math.PI / 2 + (i / evidence.length) * Math.PI * 2;
-    const k = src ? (used[src.source] = (used[src.source] || 0) + 1) - 1 : 0;
-    a += k * 0.12;
-    pos[n.id] = { x: cx + Math.cos(a) * 270, y: cy + Math.sin(a) * 250, a };
+  evidence.forEach((n) => {
+    const parentEdge = g.edges.find((e) => e.type === "SUPPORTED_BY" && e.target === n.id && pos[e.source]);
+    if (parentEdge) {
+      const p = pos[parentEdge.source];
+      const sibs = children[parentEdge.source];
+      const idx = sibs.indexOf(n.id);
+      const count = sibs.length;
+      // Spread evidence siblings over a narrow arc OUTWARD from the parent.
+      const spread = count === 1 ? 0 : Math.PI / 7;
+      const t = count === 1 ? 0.5 : idx / (count - 1);
+      const offset = -spread / 2 + t * spread;
+      const ea = p.a + offset;
+      const r = 48;
+      pos[n.id] = { x: p.x + Math.cos(ea) * r, y: p.y + Math.sin(ea) * r, a: ea };
+    } else {
+      const a = -Math.PI / 2 + (Math.random() * Math.PI * 2);
+      pos[n.id] = { x: cx + Math.cos(a) * 340, y: cy + Math.sin(a) * 340, a };
+    }
   });
-  const add = (parent, tag, attrs, text) => { const e = document.createElementNS(ns, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (text != null) e.textContent = text; parent.append(e); return e; };
-  const edges = add(svg, "g", {});
+
+  const add = (parent, tag, attrs, text) => {
+    const e = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    if (text != null) e.textContent = text;
+    parent.append(e);
+    return e;
+  };
+
+  // Edges first so nodes sit on top.
+  const edgeG = add(svg, "g", {});
   g.edges.forEach((e) => {
     const a = pos[e.source], b = pos[e.target];
-    if (a && b) add(edges, "line", { class: `edge${e.type === "SUPPORTED_BY" ? " evidence" : ""}`, x1: a.x, y1: a.y, x2: b.x, y2: b.y });
+    if (a && b) add(edgeG, "line", { class: `edge${e.type === "SUPPORTED_BY" ? " evidence" : ""}`, x1: a.x, y1: a.y, x2: b.x, y2: b.y });
   });
+
+  // Nodes + labels. Labels sit radially outward from the node; a translucent
+  // white rect underneath each label keeps text legible wherever it lands.
   g.nodes.forEach((n) => {
     const p = pos[n.id];
     if (!p) return;
     const center = n.id === g.id;
+    const isEvidence = n.type === "Evidence";
+    const r = center ? 28 : isEvidence ? 5 : 10;
+
     const grp = add(svg, "g", { class: "node", tabindex: 0, role: "button", "aria-label": `${n.label}, ${n.type}, ${n.tier}` });
-    add(grp, "circle", { class: `tier-${n.tier}`, cx: p.x, cy: p.y, r: center ? 26 : n.type === "Evidence" ? 7 : 11 });
+    add(grp, "circle", { class: `tier-${n.tier}`, cx: p.x, cy: p.y, r });
+
+    if (center) {
+      const label = n.label;
+      const w = Math.max(64, label.length * 9);
+      add(grp, "rect", { x: p.x - w / 2, y: p.y + 40, width: w, height: 24, rx: 6, fill: "#ffffff", opacity: 0.92 });
+      add(grp, "text", { class: "center-label", x: p.x, y: p.y + 57, "text-anchor": "middle" }, label);
+      return;
+    }
+
+    const maxChars = isEvidence ? 18 : 24;
+    const label = n.label.length > maxChars ? `${n.label.slice(0, maxChars - 1)}\u2026` : n.label;
     const right = Math.cos(p.a) >= -0.01;
-    const tx = center ? p.x : p.x + (right ? 16 : -16);
-    const anchor = center ? "middle" : right ? "start" : "end";
-    const max = n.type === "Evidence" ? 22 : 30;
-    const label = n.label.length > max ? `${n.label.slice(0, max - 1)}\u2026` : n.label;
-    add(grp, "text", { x: tx, y: center ? p.y + 46 : p.y + 1, "text-anchor": anchor, "font-weight": center ? 600 : 400 }, center ? n.label : label);
-    if (!center) add(grp, "text", { class: "type", x: tx, y: p.y + 15, "text-anchor": anchor }, n.type);
+    const gap = isEvidence ? 9 : 14;
+    const tx = p.x + (right ? gap : -gap);
+    const anchor = right ? "start" : "end";
+    const fontSize = isEvidence ? 10 : 12;
+    const charW = isEvidence ? 5.6 : 6.9;
+    const labelW = Math.ceil(label.length * charW) + 6;
+    const bgX = right ? tx - 3 : tx - labelW + 3;
+    const bgY = p.y - fontSize + 1;
+
+    // Label background (white, rounded) for legibility wherever a label lands.
+    add(grp, "rect", {
+      class: "label-bg",
+      x: bgX, y: bgY,
+      width: labelW,
+      height: isEvidence ? fontSize + 6 : fontSize + 20,
+      rx: 4,
+      fill: "#ffffff", opacity: 0.86,
+    });
+    add(grp, "text", {
+      x: tx, y: p.y + (isEvidence ? 3 : 0),
+      "text-anchor": anchor,
+      "font-size": fontSize,
+      "font-weight": 500,
+    }, label);
+    if (!isEvidence) add(grp, "text", { class: "type", x: tx, y: p.y + 14, "text-anchor": anchor, "font-size": 9.5 }, n.type);
+
     const select = () => { svg.querySelectorAll(".node").forEach((x) => x.classList.remove("selected")); grp.classList.add("selected"); showNode(n, g, byId); };
     grp.addEventListener("click", select);
     grp.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(); } });

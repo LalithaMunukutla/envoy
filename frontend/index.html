@@ -19,19 +19,23 @@
       <button role="tab" aria-selected="true" data-view="negotiation">Negotiation</button>
       <button role="tab" aria-selected="false" data-view="graphs">Knowledge graphs</button>
     </nav>
-    <div class="run">
-      <label class="visually-hidden" for="me-select">Your agent</label>
-      <select id="me-select" title="Your agent"></select>
-      <label class="visually-hidden" for="seeking">Looking for</label>
-      <select id="seeking" title="What you're looking for"></select>
-      <button id="find" class="primary">Find matches</button>
-      <span id="mode" class="mode"></span>
-    </div>
+    <span id="mode" class="mode" aria-live="polite"></span>
   </header>
 
   <main>
     <section id="view-negotiation" class="view">
       <div class="sessionbar">
+        <div class="run">
+          <div class="field">
+            <label for="me-select">Your agent</label>
+            <select id="me-select"></select>
+          </div>
+          <div class="field">
+            <label for="seeking">Looking for</label>
+            <select id="seeking"></select>
+          </div>
+          <button id="find" class="primary">Find matches</button>
+        </div>
         <ol class="route" id="route" aria-label="Session progress"></ol>
         <p class="pack-line" id="pack-line">Pick your agent and what you're looking for, then find people to connect with.</p>
       </div>
@@ -61,12 +65,7 @@
 
         <section class="corridor" aria-label="Conversation between agents">
           <div class="checkpoint-line" aria-hidden="true"></div>
-          <div id="letters" class="letters" aria-live="polite">
-            <div class="welcome">
-              <p class="welcome-title">Two agents, one checkpoint.</p>
-              <p>Each person's agent works from their own knowledge graph. Every message crosses the broker, which checks evidence, blocks manipulation and enforces the rules of the relationship. Nothing is booked until both people approve.</p>
-            </div>
-          </div>
+          <div id="letters" class="letters" aria-live="polite"></div>
         </section>
 
         <aside class="desk desk-receiver" id="desk-receiver" aria-label="Receiver agent">
@@ -124,7 +123,7 @@
               <li><span class="dot tier-private"></span>Private</li>
             </ul>
           </div>
-          <svg id="graph" viewBox="0 0 900 640" role="img" aria-label="Personal knowledge graph"></svg>
+          <svg id="graph" viewBox="0 0 1000 760" role="img" aria-label="Personal knowledge graph"></svg>
         </div>
         <aside class="inspector">
           <div class="panel">
